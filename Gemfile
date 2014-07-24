@@ -37,3 +37,5 @@ gem 'spring',        group: :development
 
 gem 'devise', '~> 3.2.4'
 gem 'devise-encryptable', '~> 0.2.0'
+
+gem 'pg'
