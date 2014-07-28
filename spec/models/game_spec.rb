@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+require 'rspec/collection_matchers'
 require 'timecop'
 
 describe Game do
@@ -15,10 +16,22 @@ describe Game do
       expect(g.started_at).to eq(Time.now)
     end
 
-    it "cannot be called if the game has already started" do
+    it "rolls each player's dice" do
       g = Game.new
-      allow(g).to receive(:started?) { true }
-      expect{ g.start }.to raise_error(ArgumentError)
+      allow(g).to receive(:players) { [ Player.new, Player.new ] }
+      expect(g).to receive(:roll_dice).twice
+      g.start
+    end
+
+    context "when the game has already started" do
+      before do
+        @g = Game.new
+        allow(@g).to receive(:started?) { true }
+      end
+
+      it "raises an error" do
+        expect{ @g.start }.to raise_error(ArgumentError)
+      end
     end
 
     after do
@@ -110,6 +123,18 @@ describe Game do
         allow(g).to receive(:finished?) { false }
         expect(g.in_progress?).to be false
       end
+    end
+  end
+
+  describe "#roll_dice" do
+    it "rolls the correct number of dice" do
+      g = Game.new
+      p = Player.new(dice_count: 5)
+      roll = g.roll_dice(p)
+      expect(roll.dice_count).to eq(5)
+      p = Player.new(dice_count: 2)
+      roll = g.roll_dice(p)
+      expect(roll.dice_count).to eq(2)
     end
   end
 end

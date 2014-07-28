@@ -42,5 +42,6 @@ gem 'pg'
 
 group :development do
   gem 'rspec-rails', '~> 3.0.0'
+  gem 'rspec-collection_matchers'
   gem 'timecop'
 end

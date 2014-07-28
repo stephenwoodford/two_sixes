@@ -1,12 +1,13 @@
 class Game < ActiveRecord::Base
   has_many :game_events
+  has_many :players
+  has_many :rounds
 
   def start
-    if started?
-      raise ArgumentError.new "Unable to start an already started game."
-    else
-      update_attributes(started_at: Time.now)
-    end
+    raise ArgumentError.new "Unable to start an already started game." if started?
+
+    update_attributes(started_at: Time.now)
+    players.each {|p| roll_dice(p) }
   end
 
   def started?
@@ -37,5 +38,17 @@ class Game < ActiveRecord::Base
     else
       game_events
     end
+  end
+
+  def roll_dice(player)
+    roll = Roll.new(round: round, player: player)
+    roll.dice = (0...player.dice_count).map{ Random.rand(6) + 1 }
+    roll.save!
+
+    roll
+  end
+
+  def round
+    @round ||= rounds.order(:number).last
   end
 end
