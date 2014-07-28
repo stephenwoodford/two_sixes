@@ -5,6 +5,10 @@ class Game < ActiveRecord::Base
   has_many :players
   has_many :rounds
 
+  def before_start
+    seat_players
+  end
+
   def after_start
     start_round
   end
@@ -40,5 +44,17 @@ class Game < ActiveRecord::Base
 
   def last_event
     game_events.order(:number).last
+  end
+
+  def add_player(user, name)
+    raise ArgumentError.new "Unable to join once game has started." if started?
+
+    player = players.create(user: user, dice_count: 5, starting_dice_count: 5, name: name)
+  end
+
+  def seat_players
+    raise ArgumentError.new "Unable to join once game has started." if started?
+
+    players.shuffle.each_with_index { |player, seat| player.update_attributes(seat: seat) }
   end
 end

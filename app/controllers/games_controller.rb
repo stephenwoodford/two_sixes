@@ -15,4 +15,9 @@ class GamesController < ApplicationController
 
     render json: game.events(params[:prev_event])
   end
+
+  def join
+    game = current_user.game_invites.find_by(game_id: params[:id])
+    game.add_player(current_user, current_user.name)
+  end
 end

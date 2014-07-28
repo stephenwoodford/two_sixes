@@ -7,6 +7,13 @@ describe Game do
 
   it_behaves_like "a Startable"
 
+  describe "#before_start" do
+    it "seats the players" do
+      expect(obj).to receive(:seat_players)
+      obj.before_start
+    end
+  end
+
   describe "#after_start" do
     it "starts a round" do
       expect(obj).to receive(:start_round)
@@ -62,6 +69,31 @@ describe Game do
         expect(obj.game_events).to receive(:create).with(a_hash_including(number: 0)) { GameEvent.new }
         obj.add_event(Roll.new)
       end
+    end
+  end
+
+  describe "#add_player" do
+    context "when the game has started" do
+      it "raises an error" do
+        allow(obj).to receive(:started?) { true }
+        expect{obj.add_player(User.new, "Handle")}.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe "#seat_players" do
+    context "when the game has started" do
+      it "raises an error" do
+        allow(obj).to receive(:started?) { true }
+        expect{obj.seat_players}.to raise_error(ArgumentError)
+      end
+    end
+
+    it "assigns seats to players" do
+      players = [Player.new, Player.new, Player.new]
+      allow(obj).to receive(:players) { players }
+      obj.seat_players
+      expect(players.map(&:seat)).to all(be_present)
     end
   end
 end
