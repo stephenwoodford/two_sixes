@@ -27,7 +27,18 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def add_event(action)
+    number = last_event.number + 1 if last_event
+    number ||= 0
+
+    game_events.create(number: number, action: action)
+  end
+
   def round
     @round ||= rounds.order(:number).last
+  end
+
+  def last_event
+    game_events.order(:number).last
   end
 end

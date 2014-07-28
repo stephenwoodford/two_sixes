@@ -3,13 +3,15 @@ require 'rails_helper'
 require_relative '../lib/startable_spec'
 
 describe Round do
-  let (:obj) { Round.new }
+  let (:game) { Game.new }
+  let (:obj) { Round.new(game: game) }
 
   it_behaves_like "a Startable"
 
   describe "#start" do
     it "rolls each player's dice" do
-      allow(obj).to receive(:players) { [ Player.new, Player.new ] }
+      allow(obj).to receive_message_chain(:players, :order) { [ Player.new, Player.new ] }
+      allow(game).to receive(:add_event)
       expect(obj).to receive(:roll_dice).twice
       obj.start
     end

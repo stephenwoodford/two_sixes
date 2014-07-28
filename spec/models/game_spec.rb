@@ -46,4 +46,22 @@ describe Game do
       end
     end
   end
+
+  describe "#add_event" do
+    context "when there's an existing game event" do
+      it "uses the next event number" do
+        allow(obj).to receive(:last_event){ GameEvent.new(number: 4) }
+        expect(obj.game_events).to receive(:create).with(a_hash_including(number: 5)) { GameEvent.new }
+        obj.add_event(Roll.new)
+      end
+    end
+
+    context "when there's not an existing round" do
+      it "uses round number 0" do
+        allow(obj).to receive(:last_event){ nil }
+        expect(obj.game_events).to receive(:create).with(a_hash_including(number: 0)) { GameEvent.new }
+        obj.add_event(Roll.new)
+      end
+    end
+  end
 end

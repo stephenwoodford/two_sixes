@@ -1,11 +1,16 @@
 class Round < ActiveRecord::Base
   include Startable
 
+  belongs_to :game
+
   has_many :players, through: :game
   has_many :rolls
 
   def after_start
-    players.each {|p| roll_dice(p) }
+    players.order(:seat_number).each do |p|
+      roll = roll_dice(p)
+      game.add_event(roll)
+    end
   end
 
   def roll_dice(player)
