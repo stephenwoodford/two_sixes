@@ -1,140 +1,49 @@
 require 'rails_helper'
 
-require 'rspec/collection_matchers'
-require 'timecop'
+require_relative '../lib/startable_spec'
 
 describe Game do
-  describe "#start" do
+  let (:obj) { Game.new }
+
+  it_behaves_like "a Startable"
+
+  describe "#after_start" do
+    it "starts a round" do
+      expect(obj).to receive(:start_round)
+      obj.after_start
+    end
+  end
+
+  describe "#start_round" do
     before do
-      Timecop.freeze(Time.now)
+      allow(obj).to receive(:in_progress?) { true }
+      allow_any_instance_of(Round).to receive(:start)
     end
 
-    it "records the start time" do
-      g = Game.new
-      expect(g.started_at).to be_nil
-      g.start
-      expect(g.started_at).to eq(Time.now)
+    context "when there's an existing round" do
+      it "uses the next round number" do
+        allow(obj).to receive(:round){ Round.new(number: 4) }
+        expect(obj.rounds).to receive(:create).with(number: 5) { Round.new }
+        obj.start_round
+      end
     end
 
-    it "rolls each player's dice" do
-      g = Game.new
-      allow(g).to receive(:players) { [ Player.new, Player.new ] }
-      expect(g).to receive(:roll_dice).twice
-      g.start
+    context "when there's not an existing round" do
+      it "uses round number 0" do
+        allow(obj).to receive(:round){ nil }
+        expect(obj.rounds).to receive(:create).with(number: 0) { Round.new }
+        obj.start_round
+      end
     end
 
-    context "when the game has already started" do
+    context "when the game isn't in progress" do
       before do
-        @g = Game.new
-        allow(@g).to receive(:started?) { true }
+        allow(obj).to receive(:in_progress?) { false }
       end
 
       it "raises an error" do
-        expect{ @g.start }.to raise_error(ArgumentError)
+        expect { obj.start_round }.to raise_error(ArgumentError)
       end
-    end
-
-    after do
-      Timecop.return
-    end
-  end
-
-  describe "#finish" do
-    before do
-      Timecop.freeze(Time.now)
-    end
-
-    it "records the finish time" do
-      g = Game.new
-      g.start
-      expect(g.finished_at).to be_nil
-      g.finish
-      expect(g.finished_at).to eq(Time.now)
-    end
-
-    it "cannot be called if the game has already finished" do
-      g = Game.new
-      allow(g).to receive(:started?) { true }
-      allow(g).to receive(:finished?) { true }
-      expect{ g.finish }.to raise_error(ArgumentError)
-    end
-
-    it "cannot be called if the game hasn't started" do
-      g = Game.new
-      expect{ g.finish }.to raise_error(ArgumentError)
-    end
-
-    after do
-      Timecop.return
-    end
-  end
-
-  describe "#started?" do
-    it "returns true if the game has started" do
-      g = Game.new
-      g.started_at = Time.now
-      expect(g.started?).to be true
-    end
-
-    it "returns false if the game hasn't started" do
-      g = Game.new
-      expect(g.started?).to be false
-    end
-  end
-
-  describe "#finished?" do
-    it "returns true if the game has finished" do
-      g = Game.new
-      g.finished_at = Time.now
-      expect(g.finished?).to be true
-    end
-
-    it "returns false if the game hasn't finished" do
-      g = Game.new
-      expect(g.finished?).to be false
-    end
-  end
-
-  describe "#in_progress?" do
-    let (:g) { Game.new }
-
-    context "when the game has started" do
-      before do
-        allow(g).to receive(:started?) { true }
-      end
-
-      it "returns false if the game has finished" do
-        allow(g).to receive(:finished?) { true }
-        expect(g.in_progress?).to be false
-      end
-
-      it "returns true if the game hasn't finished" do
-        allow(g).to receive(:finished?) { false }
-        expect(g.in_progress?).to be true
-      end
-    end
-
-    context "when the game hasn't started" do
-      before do
-        allow(g).to receive(:started?) { false }
-      end
-
-      it "returns false if the game hasn't finished" do
-        allow(g).to receive(:finished?) { false }
-        expect(g.in_progress?).to be false
-      end
-    end
-  end
-
-  describe "#roll_dice" do
-    it "rolls the correct number of dice" do
-      g = Game.new
-      p = Player.new(dice_count: 5)
-      roll = g.roll_dice(p)
-      expect(roll.dice_count).to eq(5)
-      p = Player.new(dice_count: 2)
-      roll = g.roll_dice(p)
-      expect(roll.dice_count).to eq(2)
     end
   end
 end
