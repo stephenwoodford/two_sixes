@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :authenticate_user!, except: :log
+  before_action :authenticate_user!, except: :events
 
   def create
     @game = current_user.games.create
@@ -13,6 +13,6 @@ class GamesController < ApplicationController
   def events
     game = current_user.games.find(params[:id])
 
-    game.events(params[:prev_event])
+    render json: game.events(params[:prev_event])
   end
 end
