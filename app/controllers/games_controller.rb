@@ -10,17 +10,9 @@ class GamesController < ApplicationController
     @game.start
   end
 
-  def log
+  def events
     game = current_user.games.find(params[:id])
 
-    if params[:last_seen]
-      since_round, since_call = params[:since].split("-").map(&:to_i)
-      since_call += 1
-    else
-      since_round = 0
-      since_call = 0
-    end
-
-    game.log_since(since_round, since_call)
+    game.events(params[:prev_event])
   end
 end
