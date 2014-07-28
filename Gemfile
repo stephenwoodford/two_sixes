@@ -42,4 +42,5 @@ gem 'pg'
 
 group :development do
   gem 'rspec-rails', '~> 3.0.0'
+  gem 'timecop'
 end
