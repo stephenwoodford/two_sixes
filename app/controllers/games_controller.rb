@@ -1,6 +1,9 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, except: :events
 
+  def index
+  end
+
   def create
     @game = current_user.games.create
   end
