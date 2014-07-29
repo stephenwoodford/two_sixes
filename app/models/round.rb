@@ -42,6 +42,7 @@ class Round < ActiveRecord::Base
 
     seq = prev_bid ? prev_bid.sequence_number + 1 : 0
     call = calls.create(number: bid.number, face_value: face_value, bs: false, player: player, legal: legal_bid?(bid), sequence_number: seq)
+    update_attributes(ones_wild: false) if bid.face_value == 1
     game.add_event(call)
   end
 
