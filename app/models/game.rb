@@ -19,6 +19,7 @@ class Game < ActiveRecord::Base
     number = round.number + 1 if round
     number ||= 0
     @round = rounds.create(number: number)
+    add_event(@round)
 
     @round.start
   end
