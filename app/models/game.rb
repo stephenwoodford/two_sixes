@@ -80,11 +80,15 @@ class Game < ActiveRecord::Base
   end
 
   def bid(user, bid)
+    raise ArgumentError.new "Unable to bid when game is not in progress." unless in_progress?
+
     player = player_for(user)
     round.bid(player, bid)
   end
 
   def bs(user)
+    raise ArgumentError.new "Unable to call bs when game is not in progress." unless in_progress?
+
     player = player_for(user)
     round.bs(player)
   end
