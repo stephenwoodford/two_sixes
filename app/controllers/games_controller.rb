@@ -14,7 +14,7 @@ class GamesController < ApplicationController
   end
 
   def events
-    game = current_user.games.find(params[:id])
+    game = Game.find(params[:id])
 
     render json: game.events(params[:prev_event])
   end
