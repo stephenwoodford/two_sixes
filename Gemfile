@@ -40,8 +40,9 @@ gem 'devise-encryptable', '~> 0.2.0'
 
 gem 'pg'
 
-group :development do
+group :development, :test do
   gem 'rspec-rails', '~> 3.0.0'
   gem 'rspec-collection_matchers'
   gem 'timecop'
+  gem 'letter_opener'
 end
