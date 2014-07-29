@@ -6,6 +6,8 @@ class Round < ActiveRecord::Base
   has_many :players, through: :game
   has_many :rolls
 
+  scope :bids, ->{ calls.where(bs: false) }
+
   def after_start
     players.order(:seat_number).each do |p|
       roll = roll_dice(p)
@@ -19,5 +21,29 @@ class Round < ActiveRecord::Base
     roll.save!
 
     roll
+  end
+
+  def prev_call
+    calls.order(:sequence_number).last
+  end
+
+  def prev_bid
+    @prev_bid ||= bids.order(:sequence_number).last.bid
+  end
+
+  def legal_bid?(bid)
+    bid > prev_bid
+  end
+
+  def bid(player, bid)
+    seq = prev_bid ? prev_bid.sequence_number + 1 : 0
+    call = calls.create(number: bid.number, face_value: face_value, bs: false, player: player, legal: legal_bid?(bid), sequence_number: seq)
+    game.add_event(call)
+  end
+
+  def bs(player)
+    seq = prev_bid ? prev_bid.sequence_number + 1 : 0
+    call = calls.create(bs: false, player: player, sequence_number: seq)
+    game.add_event(call)
   end
 end

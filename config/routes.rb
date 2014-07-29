@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       get 'events'
       post 'join'
       post 'start'
+      post 'bid'
+      post 'bs'
     end
   end
 

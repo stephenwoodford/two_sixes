@@ -57,4 +57,18 @@ class Game < ActiveRecord::Base
 
     players.shuffle.each_with_index { |player, seat| player.update_attributes(seat: seat) }
   end
+
+  def player_for(user)
+    players.where(user_id: user.id)
+  end
+
+  def bid(user, bid)
+    player = player_for(user)
+    round.bid(player, bid)
+  end
+
+  def bs(user)
+    player = player_for(user)
+    round.bs(player)
+  end
 end
