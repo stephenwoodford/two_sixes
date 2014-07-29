@@ -36,7 +36,23 @@ class Game < ActiveRecord::Base
     number = last_event.number + 1 if last_event
     number ||= 0
 
-    game_events.create(number: number, action: action)
+    if action.is_a? Call
+      if action.bs?
+        name = "BS"
+      else
+        if action.legal?
+          name = "Bid"
+        else
+          name = "IllegalBid"
+        end
+      end
+    elsif action.is_a? Round
+      name = "New Round"
+    elsif action.is_a? Roll
+      name = "Dice Roll"
+    end
+
+    game_events.create(number: number, action: action, name: name)
   end
 
   def round
