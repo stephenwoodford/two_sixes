@@ -1,0 +1,2 @@
+class UsageError < StandardError
+end

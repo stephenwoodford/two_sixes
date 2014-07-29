@@ -25,6 +25,7 @@ describe Game do
     before do
       allow(obj).to receive(:in_progress?) { true }
       allow_any_instance_of(Round).to receive(:start)
+      allow(obj).to receive(:add_event)
     end
 
     context "when there's an existing round" do
@@ -49,7 +50,7 @@ describe Game do
       end
 
       it "raises an error" do
-        expect { obj.start_round }.to raise_error(ArgumentError)
+        expect { obj.start_round }.to raise_error(UsageError)
       end
     end
   end
@@ -76,7 +77,7 @@ describe Game do
     context "when the game has started" do
       it "raises an error" do
         allow(obj).to receive(:started?) { true }
-        expect{obj.add_player(User.new, "Handle")}.to raise_error(ArgumentError)
+        expect{obj.add_player(User.new, "Handle")}.to raise_error(UsageError)
       end
     end
   end
@@ -85,7 +86,7 @@ describe Game do
     context "when the game has started" do
       it "raises an error" do
         allow(obj).to receive(:started?) { true }
-        expect{obj.seat_players}.to raise_error(ArgumentError)
+        expect{obj.seat_players}.to raise_error(UsageError)
       end
     end
 

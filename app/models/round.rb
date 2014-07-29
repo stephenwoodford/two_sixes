@@ -16,7 +16,7 @@ class Round < ActiveRecord::Base
   end
 
   def roll_dice(player)
-    raise ArgumentError.new "Unable to roll after round has started." if started?
+    raise UsageError.new "Unable to roll after round has started." if started?
 
     roll = self.rolls.build(player: player)
     roll.dice = (0...player.dice_count).map{ Random.rand(6) + 1 }
@@ -38,7 +38,7 @@ class Round < ActiveRecord::Base
   end
 
   def bid(player, bid)
-    raise ArgumentError.new "Unable to bid when round is not in progress." unless in_progress?
+    raise UsageError.new "Unable to bid when round is not in progress." unless in_progress?
 
     seq = prev_bid ? prev_bid.sequence_number + 1 : 0
     call = calls.create(number: bid.number, face_value: face_value, bs: false, player: player, legal: legal_bid?(bid), sequence_number: seq)
@@ -46,7 +46,7 @@ class Round < ActiveRecord::Base
   end
 
   def bs(player)
-    raise ArgumentError.new "Unable to call bs when round is not in progress." unless in_progress?
+    raise UsageError.new "Unable to call bs when round is not in progress." unless in_progress?
 
     seq = prev_bid ? prev_bid.sequence_number + 1 : 0
     call = calls.create(bs: false, player: player, sequence_number: seq)

@@ -31,7 +31,7 @@ describe Round do
       it "raises an error" do
         allow(obj).to receive(:started?) { true }
         p = Player.new(dice_count: 5)
-        expect { obj.roll_dice(p) }.to raise_error(ArgumentError)
+        expect { obj.roll_dice(p) }.to raise_error(UsageError)
       end
     end
   end

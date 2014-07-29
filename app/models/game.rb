@@ -14,7 +14,7 @@ class Game < ActiveRecord::Base
   end
 
   def start_round
-    raise ArgumentError.new "Unable to start round when game is not in progress." unless in_progress?
+    raise UsageError.new "Unable to start round when game is not in progress." unless in_progress?
 
     number = round.number + 1 if round
     number ||= 0
@@ -64,13 +64,13 @@ class Game < ActiveRecord::Base
   end
 
   def add_player(user, name)
-    raise ArgumentError.new "Unable to join once game has started." if started?
+    raise UsageError.new "Unable to join once game has started." if started?
 
     player = players.create(user: user, dice_count: 5, starting_dice_count: 5, name: name)
   end
 
   def seat_players
-    raise ArgumentError.new "Unable to join once game has started." if started?
+    raise UsageError.new "Unable to join once game has started." if started?
 
     players.shuffle.each_with_index { |player, seat| player.update_attributes(seat: seat) }
   end
@@ -80,14 +80,14 @@ class Game < ActiveRecord::Base
   end
 
   def bid(user, bid)
-    raise ArgumentError.new "Unable to bid when game is not in progress." unless in_progress?
+    raise UsageError.new "Unable to bid when game is not in progress." unless in_progress?
 
     player = player_for(user)
     round.bid(player, bid)
   end
 
   def bs(user)
-    raise ArgumentError.new "Unable to call bs when game is not in progress." unless in_progress?
+    raise UsageError.new "Unable to call bs when game is not in progress." unless in_progress?
 
     player = player_for(user)
     round.bs(player)
