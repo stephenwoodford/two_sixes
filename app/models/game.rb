@@ -24,6 +24,18 @@ class Game < ActiveRecord::Base
     @round.start
   end
 
+  def finish_round
+    raise UsageError.new "Unable to end round when game is not in progress." unless in_progress?
+    raise UsageError.new "Unable to end round before starting a round." unless round
+
+    round.finish
+    if players.with_dice.any?
+      start_round
+    else
+      finish
+    end
+  end
+
   def events(last_seen=nil)
     if last_seen
       game_events.where("number > ?", last_seen)
@@ -50,6 +62,8 @@ class Game < ActiveRecord::Base
       name = "New Round"
     elsif action.is_a? Roll
       name = "Dice Roll"
+    elsif action.is_a? DieLostEvent
+      name = "Die Lost"
     end
 
     game_events.create(number: number, action: action, name: name)
@@ -83,7 +97,11 @@ class Game < ActiveRecord::Base
     raise UsageError.new "Unable to bid when game is not in progress." unless in_progress?
 
     player = player_for(user)
-    round.bid(player, bid)
+    legal_bid = round.bid(player, bid)
+
+    unless legal_bid
+      finish_round
+    end
   end
 
   def bs(user)
@@ -91,5 +109,7 @@ class Game < ActiveRecord::Base
 
     player = player_for(user)
     round.bs(player)
+
+    finish_round
   end
 end
