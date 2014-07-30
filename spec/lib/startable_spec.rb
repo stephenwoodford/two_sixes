@@ -6,33 +6,33 @@ shared_examples_for "a Startable" do
   describe "#start" do
     before do
       Timecop.freeze(Time.now)
-      allow(obj).to receive(:after_start)
+      allow(subject).to receive(:after_start)
     end
 
     it "records the start time" do
-      expect(obj.started_at).to be_nil
-      obj.start
-      expect(obj.started_at).to eq(Time.now)
+      expect(subject.started_at).to be_nil
+      subject.start
+      expect(subject.started_at).to eq(Time.now)
     end
 
     it "calls after_start" do
-      expect(obj).to receive(:after_start)
-      obj.start
+      is_expected.to receive(:after_start)
+      subject.start
     end
 
-    context "when the object has already started" do
+    context "when the subject has already started" do
       before do
-        allow(obj).to receive(:started?) { true }
+        allow(subject).to receive(:started?) { true }
       end
 
       it "raises an error" do
-        expect{ obj.start }.to raise_error(ArgumentError)
+        expect{ subject.start }.to raise_error(ArgumentError)
       end
 
       it "doesn't call after_start" do
-        expect(obj).to_not receive(:after_start)
+        is_expected.to_not receive(:after_start)
         begin
-          obj.start
+          subject.start
         rescue
         end
       end
@@ -46,27 +46,28 @@ shared_examples_for "a Startable" do
   describe "#finish" do
     before do
       Timecop.freeze(Time.now)
-      allow(obj).to receive(:started?) { true }
+      allow(subject).to receive(:started?) { true }
+      allow(subject).to receive(:after_finish)
     end
 
     it "records the finish time" do
-      expect(obj.finished_at).to be_nil
-      obj.finish
-      expect(obj.finished_at).to eq(Time.now)
+      expect(subject.finished_at).to be_nil
+      subject.finish
+      expect(subject.finished_at).to eq(Time.now)
     end
 
-    it "cannot be called if the object has already finished" do
-      allow(obj).to receive(:finished?) { true }
-      expect{ obj.finish }.to raise_error(ArgumentError)
+    it "cannot be called if the subject has already finished" do
+      allow(subject).to receive(:finished?) { true }
+      expect{ subject.finish }.to raise_error(ArgumentError)
     end
 
-    context "when the object hasn't started" do
+    context "when the subject hasn't started" do
       before do
-        allow(obj).to receive(:started?) { false }
+        allow(subject).to receive(:started?) { false }
       end
 
       it "raises an error" do
-        expect{ obj.finish }.to raise_error(ArgumentError)
+        expect{ subject.finish }.to raise_error(ArgumentError)
       end
     end
 
@@ -76,52 +77,52 @@ shared_examples_for "a Startable" do
   end
 
   describe "#started?" do
-    it "returns true if the object has started" do
-      obj.started_at = Time.now
-      expect(obj.started?).to be true
+    it "returns true if the subject has started" do
+      subject.started_at = Time.now
+      expect(subject.started?).to be true
     end
 
-    it "returns false if the object hasn't started" do
-      expect(obj.started?).to be false
+    it "returns false if the subject hasn't started" do
+      expect(subject.started?).to be false
     end
   end
 
   describe "#finished?" do
-    it "returns true if the object has finished" do
-      obj.finished_at = Time.now
-      expect(obj.finished?).to be true
+    it "returns true if the subject has finished" do
+      subject.finished_at = Time.now
+      expect(subject.finished?).to be true
     end
 
-    it "returns false if the object hasn't finished" do
-      expect(obj.finished?).to be false
+    it "returns false if the subject hasn't finished" do
+      expect(subject.finished?).to be false
     end
   end
 
   describe "#in_progress?" do
-    context "when the object has started" do
+    context "when the subject has started" do
       before do
-        allow(obj).to receive(:started?) { true }
+        allow(subject).to receive(:started?) { true }
       end
 
-      it "returns false if the object has finished" do
-        allow(obj).to receive(:finished?) { true }
-        expect(obj.in_progress?).to be false
+      it "returns false if the subject has finished" do
+        allow(subject).to receive(:finished?) { true }
+        expect(subject.in_progress?).to be false
       end
 
-      it "returns true if the object hasn't finished" do
-        allow(obj).to receive(:finished?) { false }
-        expect(obj.in_progress?).to be true
+      it "returns true if the subject hasn't finished" do
+        allow(subject).to receive(:finished?) { false }
+        expect(subject.in_progress?).to be true
       end
     end
 
-    context "when the object hasn't started" do
+    context "when the subject hasn't started" do
       before do
-        allow(obj).to receive(:started?) { false }
+        allow(subject).to receive(:started?) { false }
       end
 
-      it "returns false if the object hasn't finished" do
-        allow(obj).to receive(:finished?) { false }
-        expect(obj.in_progress?).to be false
+      it "returns false if the subject hasn't finished" do
+        allow(subject).to receive(:finished?) { false }
+        expect(subject.in_progress?).to be false
       end
     end
   end
