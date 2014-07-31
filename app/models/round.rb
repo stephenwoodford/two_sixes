@@ -60,7 +60,7 @@ class Round < ActiveRecord::Base
   def total(face_value)
     raise ArgumentError.new "Invalid face value (#{face_value})" unless (1..6).include? face_value
 
-    rolls.sum{|roll| roll.count(face_value, ones_wild?)}
+    rolls.map{|roll| roll.count(face_value, ones_wild?)}.reduce(:+)
   end
 
   def prev_bid_correct?
