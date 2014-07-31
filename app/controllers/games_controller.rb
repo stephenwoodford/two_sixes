@@ -10,6 +10,10 @@ class GamesController < ApplicationController
 
   def start
     @game = current_user.games.find(params[:id])
+    player = @game.player_for(current_user)
+    name = params[:name]
+    name = current_user.name if name.blank?
+    player.update_attributes(name: name)
     @game.start
   end
 
