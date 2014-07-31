@@ -23,4 +23,19 @@ describe User do
       end
     end
   end
+
+  describe "#claim_invites" do
+    it "sets the user on all invites for the user's email" do
+      u = User.create(email: "foo@example.com", password: "foobar")
+
+      game = Game.create
+      game.game_invites.create(email: "foo@example.com")
+      game.game_invites.create(email: "bar@example.com")
+
+      expect(u.game_invites.count).to eq(0)
+      u.claim_invites
+      expect(u.game_invites.count).to eq(1)
+      expect(u.game_invites.first.email).to eq("foo@example.com")
+    end
+  end
 end

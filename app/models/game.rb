@@ -4,6 +4,7 @@ class Game < ActiveRecord::Base
   has_many :game_events
   has_many :players
   has_many :rounds
+  has_many :game_invites
 
   def before_start
     seat_players
