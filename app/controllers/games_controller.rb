@@ -25,7 +25,9 @@ class GamesController < ApplicationController
 
   def join
     game = current_user.game_invites.find_by(game_id: params[:id])
-    game.add_player(current_user, current_user.name)
+    handle = params[:handle]
+    handle = current_user.name if handle.blank?
+    game.add_player(current_user, handle)
   end
 
   def bid
