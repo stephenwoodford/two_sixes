@@ -78,10 +78,10 @@ class Game < ActiveRecord::Base
     game_events.order(:number).last
   end
 
-  def add_player(user, name)
+  def add_player(user, handle)
     raise UsageError.new "Unable to join once game has started." if started?
 
-    player = players.create(user: user, name: name)
+    player = players.create(user: user, handle: handle)
   end
 
   def seat_players

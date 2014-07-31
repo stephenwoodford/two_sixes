@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140729223600) do
+ActiveRecord::Schema.define(version: 20140731125448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 20140729223600) do
     t.integer  "starting_dice_count"
     t.integer  "finish"
     t.integer  "game_id"
-    t.string   "name"
+    t.string   "handle"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

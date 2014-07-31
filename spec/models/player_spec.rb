@@ -4,10 +4,10 @@ describe Player do
   describe "scopes" do
     describe "with_dice" do
       it "returns players with dice" do
-        Player.create(name: "Player 1", dice_count: 5)
-        Player.create(name: "Player 2", dice_count: 0)
+        Player.create(handle: "Player 1", dice_count: 5)
+        Player.create(handle: "Player 2", dice_count: 0)
         expect(Player.with_dice.count).to eq(1)
-        expect(Player.with_dice.first.name).to eq("Player 1")
+        expect(Player.with_dice.first.handle).to eq("Player 1")
       end
     end
   end
