@@ -6,4 +6,11 @@ class User < ActiveRecord::Base
 
   has_many :games, through: :players
   has_many :players
+
+  def name
+    ret = read_attribute(:name)
+    ret = email if ret.blank?
+
+    ret
+  end
 end
