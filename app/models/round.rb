@@ -9,7 +9,7 @@ class Round < ActiveRecord::Base
   scope :bids, ->{ calls.where(bs: false) }
 
   def before_start
-    players.order(:seat_number).each do |p|
+    players.order(:seat).each do |p|
       roll = roll_dice(p)
       game.add_event(roll)
     end
