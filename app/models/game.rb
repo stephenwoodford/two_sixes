@@ -7,6 +7,7 @@ class Game < ActiveRecord::Base
 
   def before_start
     seat_players
+    assign_dice
   end
 
   def after_start
@@ -80,13 +81,19 @@ class Game < ActiveRecord::Base
   def add_player(user, name)
     raise UsageError.new "Unable to join once game has started." if started?
 
-    player = players.create(user: user, dice_count: 5, starting_dice_count: 5, name: name)
+    player = players.create(user: user, name: name)
   end
 
   def seat_players
-    raise UsageError.new "Unable to join once game has started." if started?
+    raise UsageError.new "Unable to seat players once game has started." if started?
 
     players.shuffle.each_with_index { |player, seat| player.update_attributes(seat: seat) }
+  end
+
+  def assign_dice
+    raise UsageError.new "Unable to assign dice once game has started." if started?
+
+    players.each_with_index { |player, seat| player.update_attributes(dice_count: 5, starting_dice_count: 5) }
   end
 
   def player_for(user)
