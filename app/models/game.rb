@@ -1,6 +1,7 @@
 class Game < ActiveRecord::Base
   include Startable
 
+  belongs_to :owner, class_name: "User"
   has_many :game_events
   has_many :players
   has_many :rounds

@@ -5,11 +5,14 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = current_user.games.create
+    @game = current_user.owned_games.create
+    handle = params[:handle]
+    handle = current_user.name if handle.blank?
+    @game.add_player(current_user, handle)
   end
 
   def start
-    @game = current_user.games.find(params[:id])
+    @game = current_user.owned_games.find(params[:id])
     player = @game.player_for(current_user)
     handle = params[:handle]
     handle = current_user.name if handle.blank?

@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :owned_games, class_name: "Game", foreign_key: "owner_id"
   has_many :games, through: :players
   has_many :game_invites
   has_many :players
