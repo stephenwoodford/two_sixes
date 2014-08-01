@@ -3,11 +3,12 @@ Rails.application.routes.draw do
 
   resources :games do
     member do
-      get 'events'
-      post 'join'
-      post 'start'
       post 'bid'
       post 'bs'
+      get 'events'
+      post 'invite'
+      post 'join'
+      post 'start'
     end
   end
 

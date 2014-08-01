@@ -1,0 +1,7 @@
+<%= @invite.game.owner.name %> has invited you to play dice.
+
+<% if @invite.user %>
+  Log in to your account to accept or decline this invite.
+<% else %>
+  Join and play!
+<% end %>

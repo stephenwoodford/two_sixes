@@ -26,6 +26,17 @@ class GamesController < ApplicationController
     render json: game.events(params[:prev_event])
   end
 
+  def invite
+    game = current_user.owned_games.find(params[:id])
+
+    params[:emails].each do |email|
+      email = email.downcase
+      user = User.find_by_email(email)
+      invite = game.game_invites.create(user: user, email: email)
+      UserMailer.invite(invite).deliver
+    end
+  end
+
   def join
     game = current_user.game_invites.find_by(game_id: params[:id])
     handle = params[:handle]
