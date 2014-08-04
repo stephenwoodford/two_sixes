@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   has_many :owned_games, class_name: "Game", foreign_key: "owner_id"
   has_many :games, through: :players
-  has_many :game_invites
+  has_many :invites
   has_many :players
 
   after_create :claim_invites
@@ -19,6 +19,6 @@ class User < ActiveRecord::Base
   end
 
   def claim_invites
-    GameInvite.where(email: email).update_all(user_id: id)
+    Invite.where(email: email).update_all(user_id: id)
   end
 end

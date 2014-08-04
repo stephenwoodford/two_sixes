@@ -1,4 +1,4 @@
-class GameInvite < ActiveRecord::Base
+class Invite < ActiveRecord::Base
   belongs_to :game
   belongs_to :user
 end

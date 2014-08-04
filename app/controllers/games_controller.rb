@@ -32,13 +32,13 @@ class GamesController < ApplicationController
     params[:emails].each do |email|
       email = email.downcase
       user = User.find_by_email(email)
-      invite = game.game_invites.create(user: user, email: email)
+      invite = game.invites.create(user: user, email: email)
       UserMailer.invite(invite).deliver
     end
   end
 
   def join
-    game = current_user.game_invites.find_by(game_id: params[:id])
+    game = current_user.invites.find_by(game_id: params[:id])
     handle = params[:handle]
     handle = current_user.name if handle.blank?
     game.add_player(current_user, handle)
