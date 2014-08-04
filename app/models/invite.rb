@@ -7,6 +7,10 @@ class Invite < ActiveRecord::Base
   scope :open, -> { where(accepted_at: nil, declined_at: nil, revoked_at: nil) }
   scope :revoked, -> { where("revoked_at IS NOT NULL") }
 
+  def game_owner
+    game.owner
+  end
+
   def accept(handle)
     return if accepted?
     raise UsageError("Unable to accept a revoked invite") if revoked?

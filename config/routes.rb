@@ -7,8 +7,15 @@ Rails.application.routes.draw do
       post 'bs'
       get 'events'
       post 'invite'
-      post 'join'
       post 'start'
+    end
+  end
+
+  resources :invites, only: [] do
+    member do
+      post 'accept'
+      post 'decline'
+      post 'revoke'
     end
   end
 
