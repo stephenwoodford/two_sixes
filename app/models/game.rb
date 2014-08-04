@@ -8,6 +8,7 @@ class Game < ActiveRecord::Base
   has_many :invites
 
   def before_start
+    revoke_open_invites
     seat_players
     assign_dice
   end
@@ -120,5 +121,9 @@ class Game < ActiveRecord::Base
     round.bs(player)
 
     finish_round
+  end
+
+  def revoke_open_invites
+    invites.open.each(&:revoke)
   end
 end
