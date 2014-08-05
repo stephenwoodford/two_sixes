@@ -7,7 +7,7 @@ class InvitesController < ApplicationController
     handle = current_user.name if handle.blank?
     invite.accept(handle)
 
-    redirect_to game_path(invite.game)
+    redirect_to invite.game
   end
 
   def decline
@@ -26,6 +26,6 @@ class InvitesController < ApplicationController
     rescue UsageError => ex
       flash[:error] = ex.to_s
     end
-    redirect_to game_path(invite.game)
+    redirect_to invite.game
   end
 end
