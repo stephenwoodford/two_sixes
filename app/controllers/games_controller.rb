@@ -57,7 +57,8 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @player = @game.player_for(current_user) if current_user
     @is_owner = current_user && current_user.owns?(@game)
-
+    @can_revoke = @is_owner
+    @can_invite = @is_owner
 
     if @game.finished?
       redirect_to stats_games_path(@game)

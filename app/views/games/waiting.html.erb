@@ -1,1 +1,28 @@
-WAITING FOR GAME TO START
+<div>
+  Waiting for game #<%= @game.id %> to begin.
+</div>
+
+<div>
+  Players:<br>
+  <ul>
+    <% @game.players.each do |player| %>
+      <li><%= player.handle %></li>
+    <% end %>
+  </ul>
+</div>
+
+<div>
+  Open Invites:<br>
+  <ul>
+    <% @game.invites.open.each do |invite| %>
+      <li><%= invite.email %> <% if @can_revoke %>(<%= link_to "Revoke", revoke_invite_path(invite), method: :post %>)<% end %></li>
+        <% end %>
+  </ul>
+
+  <% if @can_invite %>
+    <%= form_for :invite do |f| %>
+      Email: <%= f.text_field :email %>
+      <%= f.submit "Invite" %>
+    <% end %>
+  <% end %>
+</div>
