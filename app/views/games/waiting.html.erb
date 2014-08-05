@@ -26,3 +26,9 @@
     <% end %>
   <% end %>
 </div>
+
+<% if @is_owner %>
+  <div>
+    <%= link_to "Start", start_game_path(@game), method: :post %>
+  </div>
+<% end %>
