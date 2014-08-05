@@ -45,4 +45,5 @@ group :development, :test do
   gem 'rspec-collection_matchers'
   gem 'timecop'
   gem 'letter_opener'
+  gem 'table_print'
 end
