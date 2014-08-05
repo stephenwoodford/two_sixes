@@ -1,14 +1,13 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, except: :events
 
-  def index
-  end
-
   def create
     @game = current_user.owned_games.create
     handle = params[:handle]
     handle = current_user.name if handle.blank?
     @game.add_player(current_user, handle)
+
+    redirect_to @game
   end
 
   def start
