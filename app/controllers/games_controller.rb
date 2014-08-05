@@ -45,12 +45,12 @@ class GamesController < ApplicationController
   def invite
     game = current_user.owned_games.find(params[:id])
 
-    params[:emails].each do |email|
-      email = email.downcase
-      user = User.find_by_email(email)
-      invite = game.invites.create(user: user, email: email)
-      UserMailer.invite(invite).deliver
-    end
+    email = params[:invite][:email].downcase
+    user = User.find_by_email(email)
+    invite = game.invites.create(user: user, email: email)
+    UserMailer.invite(invite).deliver
+
+    redirect_to game
   end
 
   def show

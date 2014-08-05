@@ -20,7 +20,7 @@
   </ul>
 
   <% if @can_invite %>
-    <%= form_for :invite do |f| %>
+    <%= form_for :invite, url: invite_game_path(@game) do |f| %>
       Email: <%= f.text_field :email %>
       <%= f.submit "Invite" %>
     <% end %>
