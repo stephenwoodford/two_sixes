@@ -21,4 +21,8 @@ class User < ActiveRecord::Base
   def claim_invites
     Invite.where(email: email).update_all(user_id: id)
   end
+
+  def owns?(game)
+    game.owner_id == id
+  end
 end

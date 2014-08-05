@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :authenticate_user!, except: :events
+  before_action :authenticate_user!, except: [:events, :show, :stats]
 
   ##############################
   ##  Controller Methods      ##
@@ -53,6 +53,19 @@ class GamesController < ApplicationController
     end
   end
 
+  def show
+    @game = Game.find(params[:id])
+    @player = @game.player_for(current_user) if current_user
+    @is_owner = current_user && current_user.owns?(@game)
+
+
+    if @game.finished?
+      redirect_to stats_games_path(@game)
+    elsif !@game.started?
+      render "waiting" and return
+    end
+  end
+
   def start
     @game = current_user.owned_games.find(params[:id])
     player = @game.player_for(current_user)
@@ -60,5 +73,9 @@ class GamesController < ApplicationController
     handle = current_user.name if handle.blank?
     player.update_attributes(handle: handle)
     @game.start
+  end
+
+  def stats
+    @game = Game.find(params[:id])
   end
 end
