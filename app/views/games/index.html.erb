@@ -6,7 +6,7 @@
 
 <p>
   Invitations<br>
-  <% if current_user.invites.any? %>
+  <% if current_user.invites.open.any? %>
     <ul>
       <% current_user.invites.open.each do |invite| %>
         <li>From <%= invite.game_owner.name %> (<%= pluralize invite.game.players.count, "player" %> / <%= pluralize invite.game.invites.open.count, "open invite" %>) <%= link_to "Accept", accept_invite_path(invite), method: :post %> | <%= link_to "Decline", decline_invite_path(invite), method: :post %></li>
@@ -14,5 +14,16 @@
     </ul>
   <% else %>
     None
+  <% end %>
+</p>
+
+<p>
+  <% if current_user.invites.declined.any? %>
+    Declined Invitations<br>
+    <ul>
+      <% current_user.invites.declined.each do |invite| %>
+        <li>From <%= invite.game_owner.name %> (<%= pluralize invite.game.players.count, "player" %> / <%= pluralize invite.game.invites.open.count, "open invite" %>) <%= link_to "Accept", accept_invite_path(invite), method: :post %></li>
+      <% end %>
+    </ul>
   <% end %>
 </p>
