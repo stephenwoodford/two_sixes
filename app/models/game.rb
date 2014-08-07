@@ -8,7 +8,7 @@ class Game < ActiveRecord::Base
   has_many :invites, dependent: :destroy
 
   def before_start
-    revoke_open_invites
+    revoke_open_and_declined_invites
     seat_players
     assign_dice
   end
@@ -123,7 +123,8 @@ class Game < ActiveRecord::Base
     finish_round
   end
 
-  def revoke_open_invites
+  def revoke_open_and_declined_invites
     invites.open.each(&:revoke)
+    invites.declined.each(&:revoke)
   end
 end
