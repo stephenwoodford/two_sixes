@@ -4,7 +4,7 @@ class Round < ActiveRecord::Base
   belongs_to :game
 
   has_many :players, through: :game
-  has_many :rolls
+  has_many :rolls, dependent: :destroy
 
   scope :bids, ->{ calls.where(bs: false) }
 

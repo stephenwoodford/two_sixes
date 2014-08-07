@@ -2,10 +2,10 @@ class Game < ActiveRecord::Base
   include Startable
 
   belongs_to :owner, class_name: "User"
-  has_many :game_events
-  has_many :players
-  has_many :rounds
-  has_many :invites
+  has_many :game_events, dependent: :destroy
+  has_many :players, dependent: :destroy
+  has_many :rounds, dependent: :destroy
+  has_many :invites, dependent: :destroy
 
   def before_start
     revoke_open_invites
