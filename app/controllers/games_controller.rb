@@ -48,8 +48,17 @@ class GamesController < ApplicationController
     email = params[:invite][:email].downcase
     user = User.find_by_email(email)
     invite = game.invites.create(user: user, email: email)
-    UserMailer.invite(invite).deliver
-
+    if invite.valid?
+      UserMailer.invite(invite).deliver
+    else
+      messages = invite.errors.messages
+      if messages[:email] == ["is not an email"]
+        error_message = ", email address is invalid"
+      elsif messages[:email] == ["has already been taken"]
+        error_message = ", has already been invited"
+      end
+      flash[:alert] = "Unable to invite #{invite.email}#{error_message}."
+    end
     redirect_to game
   end
 

@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :invites
   has_many :players
 
+  validates :email, presence: true, email: true
+
   after_create :claim_invites
 
   def name

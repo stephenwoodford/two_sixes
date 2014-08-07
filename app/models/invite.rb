@@ -2,6 +2,9 @@ class Invite < ActiveRecord::Base
   belongs_to :game
   belongs_to :user
 
+  validates_uniqueness_of :email, scope: :game_id
+  validates :email, presence: true, email: true
+
   scope :accepted, -> { where("accepted_at IS NOT NULL") }
   scope :declined, -> { where("declined_at IS NOT NULL") }
   scope :open, -> { where(accepted_at: nil, declined_at: nil, revoked_at: nil) }

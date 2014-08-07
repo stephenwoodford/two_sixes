@@ -24,7 +24,7 @@ class InvitesController < ApplicationController
     begin
       invite.revoke
     rescue UsageError => ex
-      flash[:error] = ex.to_s
+      flash[:alert] = ex.to_s
     end
     redirect_to invite.game
   end
