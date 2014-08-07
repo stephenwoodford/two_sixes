@@ -16,7 +16,14 @@
   <ul>
     <% @game.invites.open.each do |invite| %>
       <li><%= invite.email %> <% if @can_revoke %>(<%= link_to "Revoke", revoke_invite_path(invite), method: :post %>)<% end %></li>
-        <% end %>
+    <% end %>
+  </ul>
+
+  Declined Invites:<br>
+  <ul>
+    <% @game.invites.declined.each do |invite| %>
+      <li><%= invite.email %> <% if @can_revoke %>(<%= link_to "Revoke", revoke_invite_path(invite), method: :post %>)<% end %></li>
+    <% end %>
   </ul>
 
   <% if @can_invite %>
