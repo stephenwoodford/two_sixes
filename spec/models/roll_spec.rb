@@ -4,17 +4,28 @@ RSpec.describe Roll, type: :model do
   let (:roll) { Roll.new(dice_string: "1-2-1-4-5") }
 
   describe "#dice" do
+    it "returns an Array" do
+      expect(roll.dice).to be_a(Array)
+    end
+
+    it "contains all of the dice in dice_string" do
+      expect(roll.dice.count).to eq(5)
+      expect(roll.dice).to match_array([1, 2, 1, 4, 5])
+    end
+  end
+
+  describe "#dice_hash" do
     it "returns a Hash" do
-      expect(roll.dice).to be_a(Hash)
+      expect(roll.dice_hash).to be_a(Hash)
     end
 
     it "returns counts for each face value" do
-      expect(roll.dice[1]).to eq(2)
-      expect(roll.dice[2]).to eq(1)
-      expect(roll.dice[3]).to eq(0)
-      expect(roll.dice[4]).to eq(1)
-      expect(roll.dice[5]).to eq(1)
-      expect(roll.dice[6]).to eq(0)
+      expect(roll.dice_hash[1]).to eq(2)
+      expect(roll.dice_hash[2]).to eq(1)
+      expect(roll.dice_hash[3]).to eq(0)
+      expect(roll.dice_hash[4]).to eq(1)
+      expect(roll.dice_hash[5]).to eq(1)
+      expect(roll.dice_hash[6]).to eq(0)
     end
   end
 
@@ -22,23 +33,12 @@ RSpec.describe Roll, type: :model do
     it "assigns new dice values" do
       roll = Roll.new
       roll.dice = [1, 4, 2, 6]
-      expect(roll.dice[1]).to eq(1)
-      expect(roll.dice[2]).to eq(1)
-      expect(roll.dice[3]).to eq(0)
-      expect(roll.dice[4]).to eq(1)
-      expect(roll.dice[5]).to eq(0)
-      expect(roll.dice[6]).to eq(1)
-    end
-  end
-
-  describe "#dice_count" do
-    it "returns the number of dice rolled" do
-      expect(Roll.new(dice_string: "1-2-1-4-5").dice_count).to eq(5)
-      expect(Roll.new(dice_string: "1-2-1-4").dice_count).to eq(4)
-      expect(Roll.new(dice_string: "1-2-5").dice_count).to eq(3)
-      expect(Roll.new(dice_string: "4-5").dice_count).to eq(2)
-      expect(Roll.new(dice_string: "1").dice_count).to eq(1)
-      expect(Roll.new(dice_string: "").dice_count).to eq(0)
+      expect(roll.dice_hash[1]).to eq(1)
+      expect(roll.dice_hash[2]).to eq(1)
+      expect(roll.dice_hash[3]).to eq(0)
+      expect(roll.dice_hash[4]).to eq(1)
+      expect(roll.dice_hash[5]).to eq(0)
+      expect(roll.dice_hash[6]).to eq(1)
     end
   end
 
