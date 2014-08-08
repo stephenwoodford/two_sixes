@@ -1,1 +1,14 @@
-PLAYING
+<% @game.players.order(:seat).each do |player| %>
+  <p <% if player == @player %>class="self"<% end %>>
+    Seat <%= player.seat %>: <%= player.handle %><br>
+    <% if player == @player && @player.has_dice? %>
+      Dice: <%= @player.dice.join " " %><br>
+      Bid:<br>
+      Number: <%= text_field_tag :number %><br>
+      Face Value: <%= text_field_tag :face_value %><br>
+      <%= submit_tag "BID" %><br>
+      -- OR -- <br>
+      <%= submit_tag "+1" %>
+    <% end %>
+  </p>
+<% end %>
