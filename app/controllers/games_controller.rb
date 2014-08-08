@@ -77,12 +77,10 @@ class GamesController < ApplicationController
   end
 
   def start
-    @game = current_user.owned_games.find(params[:id])
-    player = @game.player_for(current_user)
-    handle = params[:handle]
-    handle = current_user.name if handle.blank?
-    player.update_attributes(handle: handle)
-    @game.start
+    game = current_user.owned_games.find(params[:id])
+    game.start
+
+    redirect_to game
   end
 
   def stats
