@@ -100,7 +100,7 @@ class Game < ActiveRecord::Base
   end
 
   def player_for(user)
-    players.where(user_id: user.id)
+    players.find_by_user_id(user.id)
   end
 
   def bid(user, bid)
