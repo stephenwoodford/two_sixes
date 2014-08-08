@@ -5,14 +5,13 @@ class Invite < ActiveRecord::Base
   validates_uniqueness_of :email, scope: :game_id
   validates :email, presence: true, email: true
 
+  delegate :owner, to: :game, prefix: true
+
   scope :accepted, -> { where("accepted_at IS NOT NULL") }
   scope :declined, -> { where("declined_at IS NOT NULL") }
   scope :open, -> { where(accepted_at: nil, declined_at: nil, revoked_at: nil) }
+  scope :open_or_declined, -> { where(accepted_at: nil, revoked_at: nil) }
   scope :revoked, -> { where("revoked_at IS NOT NULL") }
-
-  def game_owner
-    game.owner
-  end
 
   def accept(handle)
     return if accepted?

@@ -2,7 +2,7 @@ class InvitesController < ApplicationController
   before_action :authenticate_user!
 
   def accept
-    invite = current_user.invites.open.find(params[:id])
+    invite = current_user.invites.open_or_declined.find(params[:id])
     handle = params[:handle]
     handle = current_user.name if handle.blank?
     invite.accept(handle)
