@@ -42,6 +42,8 @@ class Round < ActiveRecord::Base
     roll.dice = (0...player.dice_count).map{ Random.rand(6) + 1 }
     roll.save!
 
+    player.update_attributes(roll: roll)
+
     roll
   end
 

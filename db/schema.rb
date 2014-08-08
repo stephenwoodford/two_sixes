@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140804125821) do
+ActiveRecord::Schema.define(version: 20140808142209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20140804125821) do
     t.string   "handle"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "roll_id"
   end
 
   create_table "rolls", force: true do |t|
