@@ -1,7 +1,7 @@
 <div data-bind="foreach: players">
   <p>
     Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
-    <div data-bind="if: currentPlayer">
+    <div data-bind="if: isCurrentPlayer">
       <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
       Bid:<br />
       Number: <%= text_field_tag :number %><br />
@@ -18,8 +18,9 @@
     var game = new GameViewModel();
 
     <% @game.players.order(:seat).each do |player| %>
-      player = new Player(<%= player.seat %>, "<%= j player.handle %>", <%= player == @player %>);
+      player = new Player(<%= raw player.to_json %>);
       <% if player == @player %>
+        player.isCurrentPlayer(true);
         player.assignDice(<%= player.dice %>);
       <% end %>
       game.addPlayer(player);

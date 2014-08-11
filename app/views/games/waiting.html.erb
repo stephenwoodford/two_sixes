@@ -40,7 +40,7 @@
     var canRevoke = <%= @can_revoke %>;
 
    <% @game.players.each do |player| %>
-      game.addPlayer(new Player(-1, "<%= j player.handle %>", <%= player == @player %>));
+      game.addPlayer(new Player(<%= raw player.to_json %>));
    <% end %>
 
    <% @game.invites.open_or_declined.each do |invite| %>
