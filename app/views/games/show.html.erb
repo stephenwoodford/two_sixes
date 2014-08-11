@@ -18,7 +18,7 @@
     var game = new GameViewModel();
 
     <% @game.players.order(:seat).each do |player| %>
-      player = new Player(<%= player.seat %>, "<%= player.handle %>", <%= player == @player %>);
+      player = new Player(<%= player.seat %>, "<%= j player.handle %>", <%= player == @player %>);
       <% if player == @player %>
         player.assignDice(<%= player.dice %>);
       <% end %>

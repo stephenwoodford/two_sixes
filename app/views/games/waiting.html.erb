@@ -40,11 +40,11 @@
     var canRevoke = <%= @can_revoke %>;
 
    <% @game.players.each do |player| %>
-      game.addPlayer(new Player(-1, "<%= player.handle %>", <%= player == @player %>));
+      game.addPlayer(new Player(-1, "<%= j player.handle %>", <%= player == @player %>));
    <% end %>
 
    <% @game.invites.open_or_declined.each do |invite| %>
-      game.addInvite(new Invite("<%= invite.email %>", <%= invite.accepted? %>, <%= invite.declined? %>, "<%= revoke_invite_url(invite) %>"));
+      game.addInvite(new Invite("<%= j invite.email %>", <%= invite.accepted? %>, <%= invite.declined? %>, "<%= j revoke_invite_url(invite) %>"));
     <% end %>
 
     ko.applyBindings(game);
