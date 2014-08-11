@@ -13,6 +13,15 @@ class Invite < ActiveRecord::Base
   scope :open_or_declined, -> { where(accepted_at: nil, revoked_at: nil) }
   scope :revoked, -> { where("revoked_at IS NOT NULL") }
 
+  def to_json
+    {
+      email: email,
+      isAccepted: accepted?,
+      isDeclined: declined?,
+      revokeUrl: Rails.application.routes.url_helpers.revoke_invite_url(self)
+    }.to_json
+  end
+
   def accept(handle)
     return if accepted?
     raise UsageError("Unable to accept a revoked invite") if revoked?

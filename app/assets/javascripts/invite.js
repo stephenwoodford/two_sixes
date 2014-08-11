@@ -1,8 +1,8 @@
-Invite = function (email, isAccepted, isDeclined, revokeUrl) {
-    this.email = email;
-    this._accepted = isAccepted;
-    this._declined = isDeclined;
-    this.revokeUrl = ko.observable(revokeUrl);
+Invite = function (obj) {
+    this.email = obj["email"];
+    this._accepted = obj["isAccepted"];
+    this._declined = obj["isDeclined"];
+    this.revokeUrl = ko.observable(obj["revokeUrl"]);
 
     this.isAccepted = function() { return this._accepted; }
     this.isDeclined = function() { return this._declined; }

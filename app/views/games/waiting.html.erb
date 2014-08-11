@@ -44,7 +44,7 @@
    <% end %>
 
    <% @game.invites.open_or_declined.each do |invite| %>
-      game.addInvite(new Invite("<%= j invite.email %>", <%= invite.accepted? %>, <%= invite.declined? %>, "<%= j revoke_invite_url(invite) %>"));
+      game.addInvite(new Invite(<%= raw invite.to_json %>));
     <% end %>
 
     ko.applyBindings(game);
