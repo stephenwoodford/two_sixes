@@ -68,6 +68,8 @@ class Game < ActiveRecord::Base
       name = "Dice Roll"
     elsif action.is_a? DieLostEvent
       name = "Die Lost"
+    elsif action.is_a? Player
+      name = "Player Added"
     end
 
     game_events.create(number: number, action: action, name: name)
@@ -85,6 +87,8 @@ class Game < ActiveRecord::Base
     raise UsageError.new "Unable to join once game has started." if started?
 
     player = players.create(user: user, handle: handle)
+    add_event(player)
+    player
   end
 
   def seat_players
