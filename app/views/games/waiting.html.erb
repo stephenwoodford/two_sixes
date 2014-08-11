@@ -4,26 +4,20 @@
 
 <div>
   Players:<br>
-  <ul>
-    <% @game.players.each do |player| %>
-      <li><%= player.handle %></li>
-    <% end %>
+  <ul data-bind="foreach: players">
+    <li data-bind="text: handle"></li>
   </ul>
 </div>
 
 <div>
   Open Invites:<br>
-  <ul>
-    <% @game.invites.open.each do |invite| %>
-      <li><%= invite.email %> <% if @can_revoke %>(<%= link_to "Revoke", revoke_invite_path(invite), method: :post %>)<% end %></li>
-    <% end %>
+  <ul data-bind="foreach: openInvites">
+    <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
   </ul>
 
   Declined Invites:<br>
-  <ul>
-    <% @game.invites.declined.each do |invite| %>
-      <li><%= invite.email %> <% if @can_revoke %>(<%= link_to "Revoke", revoke_invite_path(invite), method: :post %>)<% end %></li>
-    <% end %>
+  <ul data-bind="foreach: declinedInvites">
+    <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
   </ul>
 
   <% if @can_invite %>
@@ -38,4 +32,21 @@
   <div>
     <%= link_to "Start", start_game_path(@game), method: :post %>
   </div>
+<% end %>
+
+<% content_for :javascripts do %>
+  <script type="text/javascript">
+    var game = new GameViewModel();
+    var canRevoke = <%= @can_revoke %>;
+
+   <% @game.players.each do |player| %>
+      game.addPlayer(new Player(-1, "<%= player.handle %>", <%= player == @player %>));
+   <% end %>
+
+   <% @game.invites.open_or_declined.each do |invite| %>
+      game.addInvite(new Invite("<%= invite.email %>", <%= invite.accepted? %>, <%= invite.declined? %>, "<%= revoke_invite_url(invite) %>"));
+    <% end %>
+
+    ko.applyBindings(game);
+  </script>
 <% end %>
