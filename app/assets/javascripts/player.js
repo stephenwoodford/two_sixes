@@ -1,3 +1,5 @@
+DICE_ICONS = [0, '⚀','⚁','⚂','⚃','⚄','⚅'];
+
 Player = function (seatNumber, handle, currentPlayer) {
     this.seatNumber = seatNumber;
     this.handle = handle;
@@ -8,9 +10,9 @@ Player = function (seatNumber, handle, currentPlayer) {
         this.diceArray(diceArray);
     }
 
-    this.dice = ko.computed(function() {
+    this.diceIcons = ko.computed(function() {
         if (this.currentPlayer) {
-            return this.diceArray().join(" ");
+            return this.diceArray().map(function(elt) { return DICE_ICONS[elt] }).join(" ");
         } else {
             return "No dice";
         }

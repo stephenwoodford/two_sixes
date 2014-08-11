@@ -2,7 +2,7 @@
   <p>
     Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
     <div data-bind="if: currentPlayer">
-      Dice: <span data-bind="text: dice"></span><br />
+      <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
       Bid:<br />
       Number: <%= text_field_tag :number %><br />
       Face Value: <%= text_field_tag :face_value %><br />
