@@ -1,14 +1,30 @@
-<% @game.players.order(:seat).each do |player| %>
-  <p <% if player == @player %>class="self"<% end %>>
-    Seat <%= player.seat %>: <%= player.handle %><br>
-    <% if player == @player && @player.has_dice? %>
-      Dice: <%= @player.dice.join " " %><br>
-      Bid:<br>
-      Number: <%= text_field_tag :number %><br>
-      Face Value: <%= text_field_tag :face_value %><br>
-      <%= submit_tag "BID" %><br>
-      -- OR -- <br>
+<div data-bind="foreach: players">
+  <p>
+    Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
+    <div data-bind="if: currentPlayer">
+      Dice: <span data-bind="text: dice"></span><br />
+      Bid:<br />
+      Number: <%= text_field_tag :number %><br />
+      Face Value: <%= text_field_tag :face_value %><br />
+      <%= submit_tag "BID" %><br />
+      -- OR -- <br />
       <%= submit_tag "+1" %>
-    <% end %>
+    </div>
   </p>
+</div>
+
+<% content_for :javascripts do %>
+  <script type="text/javascript">
+    var game = new GameViewModel();
+
+    <% @game.players.order(:seat).each do |player| %>
+      player = new Player(<%= player.seat %>, "<%= player.handle %>", <%= player == @player %>);
+      <% if player == @player %>
+        player.assignDice(<%= player.dice %>);
+      <% end %>
+      game.addPlayer(player);
+    <% end %>
+
+    ko.applyBindings(game);
+  </script>
 <% end %>
