@@ -13,13 +13,17 @@ class Invite < ActiveRecord::Base
   scope :open_or_declined, -> { where(accepted_at: nil, revoked_at: nil) }
   scope :revoked, -> { where("revoked_at IS NOT NULL") }
 
-  def to_json
+  def to_hash
     {
       email: email,
       isAccepted: accepted?,
       isDeclined: declined?,
       revokeUrl: Rails.application.routes.url_helpers.revoke_invite_url(self)
-    }.to_json
+    }
+  end
+
+  def to_json
+    to_hash.to_json
   end
 
   def accept(handle)
@@ -29,6 +33,7 @@ class Invite < ActiveRecord::Base
 
     game.add_player(user, handle)
     update_attributes(accepted_at: Time.now, declined_at: nil, revoked_at: nil)
+    game.add_event(self)
   end
 
   def decline
@@ -37,6 +42,7 @@ class Invite < ActiveRecord::Base
     raise UsageError("Unable to decline an invite after game has started") if game.started?
 
     update_attributes(declined_at: Time.now)
+    game.add_event(self)
   end
 
   def revoke
@@ -44,6 +50,7 @@ class Invite < ActiveRecord::Base
     raise UsageError("Unable to revoke an accepted invite") if accepted?
 
     update_attributes(declined_at: nil, revoked_at: Time.now)
+    game.add_event(self)
   end
 
   def accepted?

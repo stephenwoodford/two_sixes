@@ -70,6 +70,16 @@ class Game < ActiveRecord::Base
       name = "Die Lost"
     elsif action.is_a? Player
       name = "Player Added"
+    elsif action.is_a? Invite
+      if action.open?
+        name = "Invite Sent"
+      elsif action.accepted?
+        name = "Invite Accepted"
+      elsif action.declined?
+        name = "Invite Declined"
+      elsif action.revoked?
+        name = "Invite Revoked"
+      end
     end
 
     game_events.create(number: number, action: action, name: name)

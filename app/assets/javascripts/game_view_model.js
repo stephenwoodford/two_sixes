@@ -23,10 +23,46 @@ function GameViewModel(eventsUrl) {
             return invite.isDeclined();
         });
     }, this);
+    self.inviteIndex = function(email) {
+        for (var i = 0; i < self.invites().length; i++)
+            if (self.invites()[i].email == email)
+                return i;
+        return -1;
+    }
+    self.inviteFor = function(email) {
+        var indx = self.inviteIndex(email);
+        if (indx < 0)
+            return;
+        return self.invites()[indx];
+    }
+    self.removeInvite = function(email) {
+        var indx = self.inviteIndex(email);
+        if (indx < 0)
+            return;
+        self.invites.splice(indx, 1);
+    }
 
     self.process = function(event) {
         if (event.event == "Player Added") {
             self.addPlayer(new Player(event.data));
+        } else if (event.event == "Invite Sent") {
+            self.addInvite(new Invite(event.data));
+        } else if (event.event == "Invite Accepted") {
+            var invite = self.inviteFor(event.data.email);
+            if (invite) {
+                invite.accept();
+            } else {
+                self.addInvite(new Invite(event.data));
+            }
+        } else if (event.event == "Invite Declined") {
+            var invite = self.inviteFor(event.data.email);
+            if (invite) {
+                invite.decline();
+            } else {
+                self.addInvite(new Invite(event.data));
+            }
+        } else if (event.event == "Invite Revoked") {
+            self.removeInvite(event.data.email);
         }
     }
 
