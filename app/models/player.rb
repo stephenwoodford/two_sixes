@@ -9,11 +9,15 @@ class Player < ActiveRecord::Base
 
   scope :with_dice, -> { where("dice_count > 0") }
 
-  def to_json
+  def to_hash
     {
       handle: handle,
       seatNumber: seat,
-    }.to_json
+    }
+  end
+
+  def to_json
+    to_hash.to_json
   end
 
   def has_dice?

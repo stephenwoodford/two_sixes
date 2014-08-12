@@ -1,5 +1,7 @@
-function GameViewModel() {
+function GameViewModel(eventsUrl) {
     var self = this;
+    this.eventsUrl = eventsUrl;
+    this.highwaterMark = -1;
 
     self.players = ko.observableArray();
 
@@ -21,4 +23,21 @@ function GameViewModel() {
             return invite.isDeclined();
         });
     }, this);
+
+    self.process = function(event) {
+        if (event.event == "Player Added") {
+            self.addPlayer(new Player(event.data));
+        }
+    }
+
+    self.wait = function() {
+        $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].number > self.highwaterMark)
+                    self.highwaterMark = data[i].number;
+                self.process(data[i])
+            }
+        });
+        setTimeout(self.wait, 1000);
+    }
 }

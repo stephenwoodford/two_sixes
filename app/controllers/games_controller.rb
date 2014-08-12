@@ -39,7 +39,14 @@ class GamesController < ApplicationController
   def events
     game = Game.find(params[:id])
 
-    render json: game.events(params[:prev_event])
+    ret = game.events(params[:prev_event]).map do |event|
+      {
+        number: event.number,
+        event: event.name,
+        data: event.action.to_hash
+      }
+    end
+    render json: ret
   end
 
   def invite
@@ -49,6 +56,7 @@ class GamesController < ApplicationController
     user = User.find_by_email(email)
     invite = game.invites.create(user: user, email: email)
     if invite.valid?
+      game.add_event(invite)
       UserMailer.invite(invite).deliver
     else
       messages = invite.errors.messages

@@ -36,17 +36,20 @@
 
 <% content_for :javascripts do %>
   <script type="text/javascript">
-    var game = new GameViewModel();
+    var game = new GameViewModel("<%= events_game_url(@game) %>");
     var canRevoke = <%= @can_revoke %>;
 
-   <% @game.players.each do |player| %>
+    <% @game.players.each do |player| %>
       game.addPlayer(new Player(<%= raw player.to_json %>));
-   <% end %>
+    <% end %>
 
-   <% @game.invites.open_or_declined.each do |invite| %>
+    <% @game.invites.open_or_declined.each do |invite| %>
       game.addInvite(new Invite(<%= raw invite.to_json %>));
     <% end %>
 
     ko.applyBindings(game);
+
+    game.highwaterMark = <%= @game.last_event.number %>;
+    game.wait();
   </script>
 <% end %>
