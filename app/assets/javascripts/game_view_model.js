@@ -63,6 +63,8 @@ function GameViewModel(eventsUrl) {
             }
         } else if (event.event == "Invite Revoked") {
             self.removeInvite(event.data.email);
+        } else if (event.event == "New Round") {
+            window.location.reload();
         }
     }
 
