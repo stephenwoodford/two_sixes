@@ -85,6 +85,12 @@ class Game < ActiveRecord::Base
     game_events.create(number: number, action: action, name: name)
   end
 
+  def filter_event?(player, event)
+    return false unless event.action.is_a? Roll
+    return true unless player
+    event.action.player != player
+  end
+
   def round
     @round ||= rounds.order(:number).last
   end

@@ -38,8 +38,9 @@ class GamesController < ApplicationController
 
   def events
     game = Game.find(params[:id])
+    player = game.player_for(current_user) if current_user
 
-    ret = game.events(params[:prev_event]).map do |event|
+    ret = game.events(params[:prev_event]).reject{|event| game.filter_event?(player, event) }.map do |event|
       {
         number: event.number,
         event: event.name,
