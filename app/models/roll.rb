@@ -4,6 +4,12 @@ class Roll < ActiveRecord::Base
 
   validate :valid_face_values
 
+  def to_hash
+    {
+      dice: dice
+    }
+  end
+
   def valid_face_values
     return if dice.all?{|value| value >=1 && value <= 6 }
 

@@ -8,6 +8,13 @@ class Round < ActiveRecord::Base
 
   scope :bids, ->{ calls.where(bs: false) }
 
+  def to_hash
+    {
+      number: number,
+      ones_wild: ones_wild
+    }
+  end
+
   def before_start
     players.order(:seat).each do |p|
       roll = roll_dice(p)
