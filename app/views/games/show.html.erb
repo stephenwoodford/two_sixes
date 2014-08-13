@@ -1,14 +1,16 @@
 <div data-bind="foreach: players">
   <p data-bind="style: { background: seatNumber == $root.bidder() ? 'aqua' : ''}">
     Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
-    <div data-bind="if: isCurrentPlayer">
+    <div data-bind="if: isCurrentPlayer()">
       <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
-      Bid:<br />
-      Number: <%= text_field_tag :number %><br />
-      Face Value: <%= text_field_tag :face_value %><br />
-      <%= submit_tag "BID" %><br />
-      -- OR -- <br />
-      <%= submit_tag "+1" %>
+      <div data-bind="if: seatNumber == $root.bidder()">
+        Bid:<br />
+        Number: <%= text_field_tag :number %><br />
+        Face Value: <%= text_field_tag :face_value %><br />
+        <%= submit_tag "BID", id: "bid" %> <%= submit_tag "+1", id: "plusOne" %><br />
+        -- OR -- <br />
+        <%= submit_tag "BS", id: "bs" %>
+      </div>
     </div>
   </p>
 </div>
