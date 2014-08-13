@@ -19,6 +19,8 @@
   <script type="text/javascript">
     var game = new GameViewModel();
     game.waiting = false;
+    game.bidder(<%= @game.bidder.seat %>);
+    game.highwaterMark = <%= @game.last_event.number %>;
 
     <% @game.players.order(:seat).each do |player| %>
       player = new Player(<%= raw player.to_json %>);
@@ -29,9 +31,11 @@
       game.addPlayer(player);
     <% end %>
 
-    game.bidder(<%= @game.bidder.seat %>);
+    $(document).ready(function() {
+      ui = new GameUI(game);
+      ui.init();
+    });
     ko.applyBindings(game);
-    game.highwaterMark = <%= @game.last_event.number %>;
     game.loop();
   </script>
 <% end %>

@@ -73,6 +73,18 @@ function GameViewModel(eventsUrl) {
         }
     }
 
+    self.bid = function(bid) {
+        $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
+            alert("successful bid.")
+        });
+    }
+
+    self.bs = function() {
+        $.post(self.bsUrl, {}, function(data) {
+            alert("successful bs.")
+        });
+    }
+
     self.loop = function() {
         jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
             for (var i = 0; i < data.length; i++) {
