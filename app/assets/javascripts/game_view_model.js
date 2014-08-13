@@ -69,13 +69,15 @@ function GameViewModel(eventsUrl) {
     }
 
     self.wait = function() {
-        $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
+        jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
             for (var i = 0; i < data.length; i++) {
                 if (data[i].number > self.highwaterMark)
                     self.highwaterMark = data[i].number;
                 self.process(data[i])
             }
         });
-        setTimeout(self.wait, 1000);
+        jqxhr.always(function(){
+            setTimeout(self.wait, 1000);
+        });
     }
 }
