@@ -5,9 +5,9 @@ function GameViewModel(eventsUrl) {
     this.bidder = ko.observable(0);
     this.waiting = false;
     this.paused = false;
+    this.currentBid = ko.observable();
 
     self.players = ko.observableArray();
-
     self.addPlayer = function(player) {
         self.players.push(player);
     }
