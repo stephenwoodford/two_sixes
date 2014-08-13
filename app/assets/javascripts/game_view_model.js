@@ -4,6 +4,7 @@ function GameViewModel(eventsUrl) {
     this.highwaterMark = -1;
     this.bidder = ko.observable(0);
     this.waiting = false;
+    this.paused = false;
 
     self.players = ko.observableArray();
 
@@ -81,7 +82,8 @@ function GameViewModel(eventsUrl) {
             }
         });
         jqxhr.always(function(){
-            setTimeout(self.loop, 2000);
+            if (!self.paused)
+                setTimeout(self.loop, 2000);
         });
     }
 }
