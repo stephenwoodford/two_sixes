@@ -1,5 +1,5 @@
 <div data-bind="foreach: players">
-  <p>
+  <p data-bind="style: { background: seatNumber == $root.bidder() ? 'aqua' : ''}">
     Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
     <div data-bind="if: isCurrentPlayer">
       <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
@@ -26,6 +26,7 @@
       game.addPlayer(player);
     <% end %>
 
+    game.bidder(<%= @game.bidder.seat %>);
     ko.applyBindings(game);
   </script>
 <% end %>

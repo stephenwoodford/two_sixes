@@ -2,7 +2,10 @@ class Round < ActiveRecord::Base
   include Startable
 
   belongs_to :game
+  belongs_to :starting_player, class_name: "Player"
+  belongs_to :loser, class_name: "Player"
 
+  has_many :calls
   has_many :players, through: :game
   has_many :rolls, dependent: :destroy
 
@@ -29,16 +32,18 @@ class Round < ActiveRecord::Base
       event.final_number = count(prev_bid.face_value)
 
       if prev_bid_correct?
-        event.player = bs.player
+        loser = bs.player
       else
-        event.player = prev_bid.player
+        loser = prev_bid.player
       end
     else
-      event.player = prev_bid.player
+      loser = prev_bid.player
     end
+    save
+    event.player = loser
     event.save
 
-    event.player.lose_die
+    loser.lose_die
     game.add_event(event)
   end
 
@@ -64,6 +69,28 @@ class Round < ActiveRecord::Base
 
   def legal_bid?(bid)
     bid > prev_bid
+  end
+
+  def bidder
+    if prev_call
+      next_player prev_call.player
+    else
+      starting_player
+    end
+  end
+
+  def next_player(player)
+    # Look up the next player by seat number
+    next_seat = (player.seat + 1) % players.count
+    player = players.find_by_seat next_seat
+
+    if player.has_dice?
+      player
+    else
+      # Since players without dice aren't removed from the round,
+      # we need to explicitly skip them.
+      next_player(player)
+    end
   end
 
   def total(face_value)

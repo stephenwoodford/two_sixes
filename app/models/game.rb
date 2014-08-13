@@ -20,9 +20,14 @@ class Game < ActiveRecord::Base
   def start_round
     raise UsageError.new "Unable to start round when game is not in progress." unless in_progress?
 
-    number = round.number + 1 if round
-    number ||= 0
-    @round = rounds.create(number: number)
+    if round
+      number = round.number + 1
+      starting_player = round.next_player round.loser
+    else
+      number = 0
+      starting_player = players.find_by_seat 0
+    end
+    @round = rounds.create(number: number, starting_player: starting_player)
     add_event(@round)
 
     @round.start
@@ -121,6 +126,10 @@ class Game < ActiveRecord::Base
 
   def player_for(user)
     players.find_by_user_id(user.id)
+  end
+
+  def bidder
+    round.bidder if round
   end
 
   def bid(user, bid)

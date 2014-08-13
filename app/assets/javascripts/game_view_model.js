@@ -2,6 +2,7 @@ function GameViewModel(eventsUrl) {
     var self = this;
     this.eventsUrl = eventsUrl;
     this.highwaterMark = -1;
+    this.bidder = ko.observable(0);
 
     self.players = ko.observableArray();
 
