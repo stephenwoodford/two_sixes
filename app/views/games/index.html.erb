@@ -4,6 +4,17 @@
   <%= link_to "New Game", games_path, method: :post %>
 </p>
 
+<% if @games.any? %>
+  <p>
+    Current Games<br>
+    <ul>
+      <% @games.each do |game| %>
+        <li><%= link_to "Game #{game.id}", game_path(game) %></li>
+      <% end %>
+    </ul>
+  </p>
+<% end %>
+
 <p>
   Invitations<br>
   <% if current_user.invites.open.any? %>

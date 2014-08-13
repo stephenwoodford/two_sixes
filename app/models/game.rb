@@ -7,6 +7,9 @@ class Game < ActiveRecord::Base
   has_many :rounds, dependent: :destroy
   has_many :invites, dependent: :destroy
 
+  scope :in_progress, -> { where("started_at IS NOT NULL AND finished_at IS NULL") }
+  scope :waiting, -> { where(started_at: nil, finished_at: nil) }
+
   def before_start
     revoke_open_and_declined_invites
     seat_players

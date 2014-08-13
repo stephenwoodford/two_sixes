@@ -50,6 +50,11 @@ class GamesController < ApplicationController
     render json: ret
   end
 
+  def index
+    @games = current_user.games.in_progress
+    @games += current_user.games.waiting
+  end
+
   def invite
     game = current_user.owned_games.find(params[:id])
 
