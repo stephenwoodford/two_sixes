@@ -37,6 +37,7 @@
 <% content_for :javascripts do %>
   <script type="text/javascript">
     var game = new GameViewModel("<%= events_game_url(@game) %>");
+    game.waiting = true;
     var canRevoke = <%= @can_revoke %>;
 
     <% @game.players.each do |player| %>
@@ -50,6 +51,6 @@
     ko.applyBindings(game);
 
     game.highwaterMark = <%= @game.last_event.number %>;
-    game.wait();
+    game.loop();
   </script>
 <% end %>

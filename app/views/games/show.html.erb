@@ -16,6 +16,7 @@
 <% content_for :javascripts do %>
   <script type="text/javascript">
     var game = new GameViewModel();
+    game.waiting = false;
 
     <% @game.players.order(:seat).each do |player| %>
       player = new Player(<%= raw player.to_json %>);
@@ -28,5 +29,7 @@
 
     game.bidder(<%= @game.bidder.seat %>);
     ko.applyBindings(game);
+    game.highwaterMark = <%= @game.last_event.number %>;
+    game.loop();
   </script>
 <% end %>

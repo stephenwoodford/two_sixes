@@ -3,6 +3,7 @@ function GameViewModel(eventsUrl) {
     this.eventsUrl = eventsUrl;
     this.highwaterMark = -1;
     this.bidder = ko.observable(0);
+    this.waiting = false;
 
     self.players = ko.observableArray();
 
@@ -65,11 +66,13 @@ function GameViewModel(eventsUrl) {
         } else if (event.event == "Invite Revoked") {
             self.removeInvite(event.data.email);
         } else if (event.event == "New Round") {
-            window.location.reload();
+            if (waiting) {
+                window.location.reload();
+            }
         }
     }
 
-    self.wait = function() {
+    self.loop = function() {
         jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
             for (var i = 0; i < data.length; i++) {
                 if (data[i].number > self.highwaterMark)
@@ -78,7 +81,7 @@ function GameViewModel(eventsUrl) {
             }
         });
         jqxhr.always(function(){
-            setTimeout(self.wait, 1000);
+            setTimeout(self.loop, 2000);
         });
     }
 }
