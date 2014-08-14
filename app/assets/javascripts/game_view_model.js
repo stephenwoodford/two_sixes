@@ -1,6 +1,8 @@
-function GameViewModel(eventsUrl) {
+function GameViewModel(urls) {
     var self = this;
-    this.eventsUrl = eventsUrl;
+    this.eventsUrl = urls["events"];
+    this.bidUrl = urls["bid"];
+    this.bsUrl = urls["bs"];
     this.highwaterMark = -1;
     this.bidder = ko.observable(0);
     this.waiting = false;

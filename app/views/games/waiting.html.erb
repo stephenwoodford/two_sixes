@@ -36,7 +36,7 @@
 
 <% content_for :javascripts do %>
   <script type="text/javascript">
-    var game = new GameViewModel("<%= events_game_url(@game) %>");
+    var game = new GameViewModel(<%= raw @urls.to_json %>);
     game.waiting = true;
     var canRevoke = <%= @can_revoke %>;
 

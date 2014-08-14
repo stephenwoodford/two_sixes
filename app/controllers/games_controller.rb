@@ -82,6 +82,10 @@ class GamesController < ApplicationController
     @is_owner = !!(current_user && current_user.owns?(@game))
     @can_revoke = @is_owner
     @can_invite = @is_owner
+    @urls = {}
+    @urls[:bid] = bid_game_url(@game)
+    @urls[:bs] = bs_game_url(@game)
+    @urls[:events] = events_game_url(@game)
 
     if @game.finished?
       redirect_to stats_games_path(@game)

@@ -19,7 +19,7 @@
 
 <% content_for :javascripts do %>
   <script type="text/javascript">
-    var game = new GameViewModel();
+    var game = new GameViewModel(<%= raw @urls.to_json %>);
     game.waiting = false;
     game.bidder(<%= @game.bidder.seat %>);
     game.highwaterMark = <%= @game.last_event.number %>;
