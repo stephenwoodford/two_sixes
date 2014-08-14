@@ -64,7 +64,11 @@ class Round < ActiveRecord::Base
   end
 
   def prev_bid
-    @prev_bid ||= bids.order(:sequence_number).last.bid
+    unless @prev_bid
+      @prev_bid = prev_call.bid if prev_call
+    end
+
+    @prev_bid
   end
 
   def legal_bid?(bid)
@@ -108,7 +112,7 @@ class Round < ActiveRecord::Base
 
     legal = legal_bid? bid
     seq = prev_bid ? prev_bid.sequence_number + 1 : 0
-    call = calls.create(number: bid.number, face_value: face_value, bs: false, player: player, legal: legal, sequence_number: seq)
+    call = calls.create(number: bid.number, face_value: bid.face_value, bs: false, player: player, legal: legal, sequence_number: seq)
     update_attributes(ones_wild: false) if bid.face_value == 1
     game.add_event(call)
 
