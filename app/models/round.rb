@@ -123,7 +123,7 @@ class Round < ActiveRecord::Base
     raise UsageError.new "Unable to call bs when round is not in progress." unless in_progress?
 
     seq = current_call ? current_call.sequence_number + 1 : 0
-    call = calls.create(bs: false, player: player, sequence_number: seq)
+    call = calls.create(bs: true, player: player, sequence_number: seq)
     game.add_event(call)
   end
 end
