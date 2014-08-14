@@ -72,6 +72,12 @@ function GameViewModel(urls) {
             if (waiting) {
                 window.location.reload();
             }
+        } else if (event.event == "BS") {
+            alert("BS Called");
+        } else if (event.event == "Bid") {
+            var bid = new Bid(event.data.number, event.data.faceValue);
+            self.currentBid(bid);
+            self.bidder((self.bidder() + 1) % self.players().length);
         }
     }
 
