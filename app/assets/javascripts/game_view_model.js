@@ -14,6 +14,13 @@ function GameViewModel(urls) {
     self.addPlayer = function(player) {
         self.players.push(player);
     }
+    self.playerInSeat = function(seatNumber) {
+        for (var i = 0; i < self.players().length; i++) {
+            player = self.players()[i];
+            if (player.seatNumber == seatNumber)
+                return player;
+        }
+    }
 
     self.invites = ko.observableArray();
     self.addInvite = function(invite) {
@@ -90,6 +97,10 @@ function GameViewModel(urls) {
         var bid = new Bid(event.data.number, event.data.faceValue);
         self.currentBid(bid);
         self.bidder((self.bidder() + 1) % self.players().length);
+    }
+    self.eventHandlers["Die Lost"] = function(event) {
+        var player = self.playerInSeat(event.data.seat);
+        player.lostDie(true);
     }
 
     self.bid = function(bid) {
