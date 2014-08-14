@@ -13,7 +13,7 @@
         Bid:<br />
         Number: <%= text_field_tag :number %><br />
         Face Value: <%= select_tag :face_value, options_for_select(1.upto(6)) %><br />
-        <%= submit_tag "BID", id: "bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid()" %><br />
+        <%= submit_tag "BID", id: "bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().to_string() : '' }" %><br />
         <span data-bind="visible: $root.currentBid()">-- OR --</span> <br />
         <%= submit_tag "BS", id: "bs", "data-bind" => "visible: $root.currentBid()" %>
       </div>
