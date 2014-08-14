@@ -5,7 +5,7 @@
 </div>
 
 <div data-bind="foreach: players">
-  <p data-bind="style: { background: seatNumber == $root.bidder() ? 'aqua' : ''}">
+  <p data-bind="css: { currentBidder: seatNumber == $root.bidder(), lostDie: lostDie }">
     Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
     <div data-bind="if: isCurrentPlayer()">
       <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />

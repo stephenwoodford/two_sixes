@@ -5,6 +5,7 @@ Player = function (obj) {
     this.handle = obj["handle"];
     this.isCurrentPlayer = ko.observable(false);
     this.diceArray = ko.observableArray();
+    this.lostDie = ko.observable(false);
 
     this.assignDice = function(diceArray) {
         this.diceArray(diceArray);
