@@ -28,16 +28,16 @@ class Round < ActiveRecord::Base
   def after_finish
     event = DieLostEvent.new
     event.round = self
-    if current_bid.legal?
-      event.final_number = count(current_bid.face_value)
+    if current_call.bs?
+      event.final_number = total(current_bid.face_value)
 
       if current_bid_correct?
-        loser = bs.player
+        self.loser = current_call.player
       else
-        loser = current_bid.player
+        self.loser = previous_call.player
       end
     else
-      loser = current_bid.player
+      self.loser = current_bid.player
     end
     save
     event.player = loser
@@ -63,12 +63,18 @@ class Round < ActiveRecord::Base
     calls.order(:sequence_number).last
   end
 
-  def current_bid
-    unless @current_bid
-      @current_bid = current_call.bid if current_call
-    end
+  def previous_call
+    calls.order(:sequence_number)[-2]
+  end
 
-    @current_bid
+  def current_bid
+    return unless current_call
+
+    if current_call.bs?
+      previous_call.bid
+    else
+      current_call.bid
+    end
   end
 
   def legal_bid?(bid)
@@ -104,7 +110,7 @@ class Round < ActiveRecord::Base
   end
 
   def current_bid_correct?
-    total(current_bid.face_value, ones_wild?) >= current_bid.number
+    total(current_bid.face_value) >= current_bid.number
   end
 
   def bid(player, bid)
