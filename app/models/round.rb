@@ -59,13 +59,13 @@ class Round < ActiveRecord::Base
     roll
   end
 
-  def prev_call
+  def current_call
     calls.order(:sequence_number).last
   end
 
   def current_bid
     unless @current_bid
-      @current_bid = prev_call.bid if prev_call
+      @current_bid = current_call.bid if current_call
     end
 
     @current_bid
@@ -76,8 +76,8 @@ class Round < ActiveRecord::Base
   end
 
   def bidder
-    if prev_call
-      next_player prev_call.player
+    if current_call
+      next_player current_call.player
     else
       starting_player
     end
@@ -111,7 +111,7 @@ class Round < ActiveRecord::Base
     raise UsageError.new "Unable to bid when round is not in progress." unless in_progress?
 
     legal = legal_bid? bid
-    seq = current_bid ? current_bid.sequence_number + 1 : 0
+    seq = current_call ? current_call.sequence_number + 1 : 0
     call = calls.create(number: bid.number, face_value: bid.face_value, bs: false, player: player, legal: legal, sequence_number: seq)
     update_attributes(ones_wild: false) if bid.face_value == 1
     game.add_event(call)
@@ -122,7 +122,7 @@ class Round < ActiveRecord::Base
   def bs(player)
     raise UsageError.new "Unable to call bs when round is not in progress." unless in_progress?
 
-    seq = current_bid ? current_bid.sequence_number + 1 : 0
+    seq = current_call ? current_call.sequence_number + 1 : 0
     call = calls.create(bs: false, player: player, sequence_number: seq)
     game.add_event(call)
   end
