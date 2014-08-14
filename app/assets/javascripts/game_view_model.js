@@ -98,4 +98,6 @@ function GameViewModel(eventsUrl) {
                 setTimeout(self.loop, 2000);
         });
     }
+
+    self.pause = function() { self.paused = true; }
 }

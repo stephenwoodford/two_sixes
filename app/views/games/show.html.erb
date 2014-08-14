@@ -1,3 +1,5 @@
+<a href="#" onClick="game.pause(); return false;">Pause</a>
+
 <div data-bind="foreach: players">
   <p data-bind="style: { background: seatNumber == $root.bidder() ? 'aqua' : ''}">
     Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
