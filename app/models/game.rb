@@ -135,6 +135,10 @@ class Game < ActiveRecord::Base
     round.bidder if round
   end
 
+  def current_bid
+    round.current_bid if round
+  end
+
   def bid(user, bid)
     raise UsageError.new "Unable to bid when game is not in progress." unless in_progress?
 

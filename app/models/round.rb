@@ -28,16 +28,16 @@ class Round < ActiveRecord::Base
   def after_finish
     event = DieLostEvent.new
     event.round = self
-    if prev_bid.legal?
-      event.final_number = count(prev_bid.face_value)
+    if current_bid.legal?
+      event.final_number = count(current_bid.face_value)
 
-      if prev_bid_correct?
+      if current_bid_correct?
         loser = bs.player
       else
-        loser = prev_bid.player
+        loser = current_bid.player
       end
     else
-      loser = prev_bid.player
+      loser = current_bid.player
     end
     save
     event.player = loser
@@ -63,16 +63,16 @@ class Round < ActiveRecord::Base
     calls.order(:sequence_number).last
   end
 
-  def prev_bid
-    unless @prev_bid
-      @prev_bid = prev_call.bid if prev_call
+  def current_bid
+    unless @current_bid
+      @current_bid = prev_call.bid if prev_call
     end
 
-    @prev_bid
+    @current_bid
   end
 
   def legal_bid?(bid)
-    bid > prev_bid
+    bid > current_bid
   end
 
   def bidder
@@ -103,15 +103,15 @@ class Round < ActiveRecord::Base
     rolls.map{|roll| roll.count(face_value, ones_wild?)}.reduce(:+)
   end
 
-  def prev_bid_correct?
-    total(prev_bid.face_value, ones_wild?) >= prev_bid.number
+  def current_bid_correct?
+    total(current_bid.face_value, ones_wild?) >= current_bid.number
   end
 
   def bid(player, bid)
     raise UsageError.new "Unable to bid when round is not in progress." unless in_progress?
 
     legal = legal_bid? bid
-    seq = prev_bid ? prev_bid.sequence_number + 1 : 0
+    seq = current_bid ? current_bid.sequence_number + 1 : 0
     call = calls.create(number: bid.number, face_value: bid.face_value, bs: false, player: player, legal: legal, sequence_number: seq)
     update_attributes(ones_wild: false) if bid.face_value == 1
     game.add_event(call)
@@ -122,7 +122,7 @@ class Round < ActiveRecord::Base
   def bs(player)
     raise UsageError.new "Unable to call bs when round is not in progress." unless in_progress?
 
-    seq = prev_bid ? prev_bid.sequence_number + 1 : 0
+    seq = current_bid ? current_bid.sequence_number + 1 : 0
     call = calls.create(bs: false, player: player, sequence_number: seq)
     game.add_event(call)
   end
