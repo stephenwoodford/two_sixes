@@ -8,6 +8,7 @@ function GameViewModel(urls) {
     this.waiting = false;
     this.paused = false;
     this.currentBid = ko.observable();
+    this.eventHandlers = {};
 
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
@@ -47,38 +48,48 @@ function GameViewModel(urls) {
         self.invites.splice(indx, 1);
     }
 
-    self.process = function(event) {
-        if (event.event == "Player Added") {
-            self.addPlayer(new Player(event.data));
-        } else if (event.event == "Invite Sent") {
+    self.dispatch = function(event) {
+        var func = self.eventHandlers[event.event];
+        if (func) { func(event); }
+        return event.number;
+    }
+    self.eventHandlers["Player Added"] = function(event) {
+        self.addPlayer(new Player(event.data));
+    }
+    self.eventHandlers["Invite Sent"] = function(event) {
             self.addInvite(new Invite(event.data));
-        } else if (event.event == "Invite Accepted") {
-            var invite = self.inviteFor(event.data.email);
-            if (invite) {
-                invite.accept();
-            } else {
-                self.addInvite(new Invite(event.data));
-            }
-        } else if (event.event == "Invite Declined") {
-            var invite = self.inviteFor(event.data.email);
-            if (invite) {
-                invite.decline();
-            } else {
-                self.addInvite(new Invite(event.data));
-            }
-        } else if (event.event == "Invite Revoked") {
-            self.removeInvite(event.data.email);
-        } else if (event.event == "New Round") {
-            if (waiting) {
-                window.location.reload();
-            }
-        } else if (event.event == "BS") {
-            alert("BS Called");
-        } else if (event.event == "Bid") {
-            var bid = new Bid(event.data.number, event.data.faceValue);
-            self.currentBid(bid);
-            self.bidder((self.bidder() + 1) % self.players().length);
+    }
+    self.eventHandlers["Invite Accepted"] = function(event) {
+        var invite = self.inviteFor(event.data.email);
+        if (invite) {
+            invite.accept();
+        } else {
+            self.addInvite(new Invite(event.data));
         }
+    }
+    self.eventHandlers["Invite Declined"] = function(event) {
+        var invite = self.inviteFor(event.data.email);
+        if (invite) {
+            invite.decline();
+        } else {
+            self.addInvite(new Invite(event.data));
+        }
+    }
+    self.eventHandlers["Invite Revoked"] = function(event) {
+        self.removeInvite(event.data.email);
+    }
+    self.eventHandlers["New Round"] = function(event) {
+        if (waiting) {
+            window.location.reload();
+        }
+    }
+    self.eventHandlers["BS"] = function(event) {
+        alert("BS Called");
+    }
+    self.eventHandlers["Bid"] = function(event) {
+        var bid = new Bid(event.data.number, event.data.faceValue);
+        self.currentBid(bid);
+        self.bidder((self.bidder() + 1) % self.players().length);
     }
 
     self.bid = function(bid) {
@@ -96,9 +107,12 @@ function GameViewModel(urls) {
     self.loop = function() {
         jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
             for (var i = 0; i < data.length; i++) {
-                if (data[i].number > self.highwaterMark)
-                    self.highwaterMark = data[i].number;
-                self.process(data[i])
+                var seq_num = self.dispatch(data[i]);
+                /* Only update highwaterMark if the event's sequence number is actually higher.
+                   (Hopefully we never actually process events out of order.)
+                 */
+                if (seq_num > self.highwaterMark)
+                    self.highwaterMark = seq_num;
             }
         });
         jqxhr.always(function(){
