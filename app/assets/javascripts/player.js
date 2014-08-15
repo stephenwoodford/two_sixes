@@ -6,6 +6,7 @@ Player = function (obj) {
     this.isCurrentPlayer = ko.observable(false);
     this.diceArray = ko.observableArray();
     this.lostDie = ko.observable(false);
+    this.hasDice = ko.observable(obj["hasDice"] || false);
 
     this.assignDice = function(diceArray) {
         this.diceArray(diceArray);
@@ -17,5 +18,9 @@ Player = function (obj) {
         } else {
             return "No dice";
         }
+    }, this);
+
+    this.noDice = ko.computed(function() {
+        return !this.hasDice();
     }, this);
 }

@@ -13,6 +13,7 @@ class Player < ActiveRecord::Base
     {
       handle: handle,
       seatNumber: seat,
+      hasDice: has_dice?
     }
   end
 
