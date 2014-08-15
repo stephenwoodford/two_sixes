@@ -135,12 +135,22 @@ function GameViewModel(urls) {
         return 0;
     }
 
-    self.bid = function(bid) {
+    self.plusOne = function() {
+        var bid = self.currentBid().plusOne();
+        self.submitBid(bid);
+    }
+    self.bid = function() {
+        var number = parseInt($("#number").val());
+        var faceValue = parseInt($("#face_value").val());
+        var bid = new Bid(number, faceValue);
+
+        self.submitBid(bid);
+    }
+    self.submitBid = function(bid) {
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
             alert("successful bid.")
         });
     }
-
     self.bs = function() {
         $.post(self.bsUrl, {}, function(data) {
             alert("successful bs.")
