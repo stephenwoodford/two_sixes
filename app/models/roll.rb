@@ -6,7 +6,8 @@ class Roll < ActiveRecord::Base
 
   def to_hash
     {
-      dice: dice
+      dice: dice,
+      seatNumber: player.seat
     }
   end
 

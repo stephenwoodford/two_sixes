@@ -129,6 +129,11 @@ function GameViewModel(urls) {
         player.lostDie(true);
         return 10000;
     }
+    self.eventHandlers["Dice Roll"] = function(event) {
+        var player = self.playerInSeat(event.data.seatNumber);
+        player.assignDice(event.data.dice);
+        return 0;
+    }
 
     self.bid = function(bid) {
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
