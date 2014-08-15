@@ -9,6 +9,8 @@ function GameViewModel(urls) {
     this.paused = false;
     this.currentBid = ko.observable();
     this.eventHandlers = {};
+    this.events = [];
+    this.processing = false;
 
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
@@ -55,16 +57,25 @@ function GameViewModel(urls) {
         self.invites.splice(indx, 1);
     }
 
+    /*
+       Call an event handler for a given event, based upon that event's name.
+       Return the number of milliseconds to wait before processing the next
+       event (if any.)
+    */
     self.dispatch = function(event) {
         var func = self.eventHandlers[event.event];
-        if (func) { func(event); }
-        return event.number;
+        if (func)
+            return func(event);
+        else
+            return 0;
     }
     self.eventHandlers["Player Added"] = function(event) {
         self.addPlayer(new Player(event.data));
+        return 0;
     }
     self.eventHandlers["Invite Sent"] = function(event) {
-            self.addInvite(new Invite(event.data));
+        self.addInvite(new Invite(event.data));
+        return 0;
     }
     self.eventHandlers["Invite Accepted"] = function(event) {
         var invite = self.inviteFor(event.data.email);
@@ -73,6 +84,7 @@ function GameViewModel(urls) {
         } else {
             self.addInvite(new Invite(event.data));
         }
+        return 0;
     }
     self.eventHandlers["Invite Declined"] = function(event) {
         var invite = self.inviteFor(event.data.email);
@@ -81,26 +93,32 @@ function GameViewModel(urls) {
         } else {
             self.addInvite(new Invite(event.data));
         }
+        return 0;
     }
     self.eventHandlers["Invite Revoked"] = function(event) {
         self.removeInvite(event.data.email);
+        return 0;
     }
     self.eventHandlers["New Round"] = function(event) {
         if (waiting) {
             window.location.reload();
         }
+        return 0;
     }
     self.eventHandlers["BS"] = function(event) {
         alert("BS Called");
+        return 0;
     }
     self.eventHandlers["Bid"] = function(event) {
         var bid = new Bid(event.data.number, event.data.faceValue);
         self.currentBid(bid);
         self.bidder((self.bidder() + 1) % self.players().length);
+        return 1000;
     }
     self.eventHandlers["Die Lost"] = function(event) {
         var player = self.playerInSeat(event.data.seat);
         player.lostDie(true);
+        return 10000;
     }
 
     self.bid = function(bid) {
@@ -115,16 +133,30 @@ function GameViewModel(urls) {
         });
     }
 
+    self.process = function() {
+        self.processing = true;
+        if (self.events.length == 0) {
+            self.processing = false;
+            return;
+        }
+        var event = self.events.shift();
+        var delay = self.dispatch(event);
+        /* Only update highwaterMark if the event's sequence number is actually higher.
+           (Hopefully we never actually process events out of order.)
+        */
+        if (event.number > self.highwaterMark)
+            self.highwaterMark = event.number;
+        if (delay == 0)
+            self.process();
+        else
+            setTimeout(self.process, delay);
+    }
+
     self.loop = function() {
         jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
-            for (var i = 0; i < data.length; i++) {
-                var seq_num = self.dispatch(data[i]);
-                /* Only update highwaterMark if the event's sequence number is actually higher.
-                   (Hopefully we never actually process events out of order.)
-                 */
-                if (seq_num > self.highwaterMark)
-                    self.highwaterMark = seq_num;
-            }
+            self.events = self.events.concat(data);
+            if (!self.processing)
+                self.process();
         });
         jqxhr.always(function(){
             if (!self.paused)
