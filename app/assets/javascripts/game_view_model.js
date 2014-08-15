@@ -100,8 +100,17 @@ function GameViewModel(urls) {
         return 0;
     }
     self.eventHandlers["New Round"] = function(event) {
-        if (waiting) {
+        if (self.waiting) {
             window.location.reload();
+        } else {
+            for (var i = 0; i < event.data.players.length; i++) {
+                var playerData = event.data.players[i];
+                var player = self.playerInSeat(playerData.seatNumber);
+                player.lostDie(false);
+                player.hasDice(playerData.hasDice);
+            }
+            self.bidder(event.data.bidder);
+            self.currentBid(null);
         }
         return 0;
     }

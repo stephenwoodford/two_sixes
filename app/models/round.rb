@@ -14,7 +14,9 @@ class Round < ActiveRecord::Base
   def to_hash
     {
       number: number,
-      ones_wild: ones_wild
+      ones_wild: ones_wild,
+      players: players.map(&:to_hash),
+      bidder: bidder.seat
     }
   end
 
