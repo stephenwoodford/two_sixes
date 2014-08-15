@@ -112,7 +112,7 @@ function GameViewModel(urls) {
     self.eventHandlers["Bid"] = function(event) {
         var bid = new Bid(event.data.number, event.data.faceValue);
         self.currentBid(bid);
-        self.bidder((self.bidder() + 1) % self.players().length);
+        self.bidder(self.nextBidder());
         return 1000;
     }
     self.eventHandlers["Die Lost"] = function(event) {
@@ -165,4 +165,11 @@ function GameViewModel(urls) {
     }
 
     self.pause = function() { self.paused = true; }
+
+    self.nextBidder = function() {
+        var next = (self.bidder() + 1) % self.players().length;
+        while (self.playerInSeat(next).noDice())
+            next = (next + 1) % self.players().length;
+        return next;
+    }
 }
