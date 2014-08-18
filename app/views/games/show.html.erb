@@ -8,8 +8,8 @@
   </div>
 
   <!-- ko foreach: rows -->
-  <div class="row" data-bind="foreach: columns">
-    <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice }">
+  <div class="row gameRow" data-bind="foreach: columns">
+    <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice, currentPlayer: player.isCurrentPlayer }">
       <!-- ko with: player -->
       Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
       <div data-bind="if: isCurrentPlayer()">

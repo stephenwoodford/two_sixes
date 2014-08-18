@@ -35,7 +35,7 @@ function GameViewModel(urls) {
             if (self.players()[i].isCurrentPlayer()) {
                 var row = new Row();
                 currentPlayer = self.players()[i];
-                row.addColumn("col-md-4 col-md-offset-4", currentPlayer);
+                row.addColumn("col-md-3 col-md-offset-4", currentPlayer);
                 arr.push(row)
                 break;
             }
@@ -47,7 +47,7 @@ function GameViewModel(urls) {
             // 2 players is a special case.  The non-current player goes in the middle of the top row.
             var topRow = new Row();
             otherPlayer = self.playerInSeat(currentPlayer.seatNumber == 0 ? 1 : 0);
-            topRow.addColumn("col-md-4 col-md-offset-4", otherPlayer);
+            topRow.addColumn("col-md-3 col-md-offset-4", otherPlayer);
             arr.unshift(topRow);
         } else {
             var rowCount = Math.ceil(self.players().length / 2);
@@ -65,12 +65,13 @@ function GameViewModel(urls) {
              */
             for (var i = 1; i < rowCount; i++) {
                 var row = new Row();
-                row.addColumn("col-md-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i)));
+                row.addColumn("col-md-3 col-md-offset-1", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i)));
                 if (i == rowCount - 1 && self.players().length % 2 == 0) {
                     // We need 3 in the top row if there's an even number of players
-                    row.addColumn("col-md-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i + 1)));
+                    row.addColumn("col-md-3 col-md-offset-1", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i + 1)));
+                    row.addColumn("col-md-3", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
                 }
-                row.addColumn("col-md-4 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
+                row.addColumn("col-md-3 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
                 
                 arr.unshift(row);
             }
