@@ -7,6 +7,8 @@ class Call < ActiveRecord::Base
     if bid
       ret[:number] = bid.number
       ret[:faceValue] = bid.face_value
+    else
+      ret[:totals] = round.totals_by_seat(previous_bid.face_value)
     end
 
     ret
@@ -15,5 +17,9 @@ class Call < ActiveRecord::Base
   def bid
     return nil if bs?
     Bid.new number, face_value
+  end
+
+  def previous_bid
+    round.previous_bid(self)
   end
 end

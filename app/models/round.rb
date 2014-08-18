@@ -79,6 +79,10 @@ class Round < ActiveRecord::Base
     end
   end
 
+  def previous_bid(bid)
+    calls.find_by(sequence_number: bid.sequence_number - 1).bid
+  end
+
   def legal_bid?(bid)
     bid > current_bid
   end
@@ -106,9 +110,16 @@ class Round < ActiveRecord::Base
   end
 
   def total(face_value)
+    totals_by_seat(face_value).values.reduce(:+)
+  end
+
+  def totals_by_seat(face_value)
     raise ArgumentError.new "Invalid face value (#{face_value})" unless (1..6).include? face_value
 
-    rolls.map{|roll| roll.count(face_value, ones_wild?)}.reduce(:+)
+    ret = Hash.new(0)
+    rolls.includes(:player).each{|roll| ret[roll.player.seat] = roll.count(face_value, ones_wild?)}
+
+    ret
   end
 
   def current_bid_correct?
