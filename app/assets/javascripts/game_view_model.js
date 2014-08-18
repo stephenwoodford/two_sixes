@@ -24,6 +24,58 @@ function GameViewModel(urls) {
         }
     }
 
+    /* Layout players on the board in rows.  The current player goes on the bottom in the middle,
+     * all other rows have a player on the left and a player on the right, with 3 players in the top
+     * row, if necessary.
+     */
+    self.rows = ko.computed(function() {
+        var arr = [];
+        var currentPlayer;
+        for (var i = 0; i < self.players().length; i++)
+            if (self.players()[i].isCurrentPlayer()) {
+                var row = new Row();
+                currentPlayer = self.players()[i];
+                row.addColumn("col-md-4 col-md-offset-4", currentPlayer);
+                arr.push(row)
+                break;
+            }
+
+        if (self.players().length == 2) {
+            // 2 players is a special case.  The non-current player goes in the middle of the top row.
+            var topRow = new Row();
+            otherPlayer = self.playerInSeat(currentPlayer.seatNumber == 0 ? 1 : 0);
+            topRow.addColumn("col-md-4 col-md-offset-4", otherPlayer);
+            arr.unshift(topRow);
+        } else {
+            var rowCount = Math.ceil(self.players().length / 2);
+            /* Build the rows from the bottom up, it makes computing seats easier.
+             * The players in the left column are currentPlayer's seat plus row number, the
+             * players in the right column are currentPlayer's seat minus row number (when the bottom row is
+             * row 0.)
+             * ----------------------------
+             * | x + 3 || (x + 4) || x - 3|
+             * | x + 2 |           | x - 2|
+             * | x + 1 |           | x - 1|
+             *            | x |
+             * ----------------------------
+             * The only special case is the top row, where there might be 3 players.
+             */
+            for (var i = 1; i < rowCount; i++) {
+                var row = new Row();
+                row.addColumn("col-md-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i)));
+                if (i == rowCount - 1 && self.players().length % 2 == 0) {
+                    // We need 3 in the top row if there's an even number of players
+                    row.addColumn("col-md-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i + 1)));
+                }
+                row.addColumn("col-md-4 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
+                
+                arr.unshift(row);
+            }
+        }
+
+        return arr;
+    });
+
     self.invites = ko.observableArray();
     self.addInvite = function(invite) {
         self.invites.push(invite);
@@ -191,9 +243,16 @@ function GameViewModel(urls) {
     self.pause = function() { self.paused = true; }
 
     self.nextBidder = function() {
-        var next = (self.bidder() + 1) % self.players().length;
+        var next = self.adjustSeat(self.bidder(), 1);
         while (self.playerInSeat(next).noDice())
-            next = (next + 1) % self.players().length;
+            next = self.adjustSeat(next, 1);
         return next;
+    }
+
+    self.adjustSeat = function(seat, adjust) {
+        if (adjust < 0)
+            // Convert a negative adjustment to the corresponding positive adjustment
+            adjust = self.players().length + (adjust % self.players().length);
+        return (seat + adjust) % self.players().length;
     }
 }

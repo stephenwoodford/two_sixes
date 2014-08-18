@@ -1,24 +1,32 @@
 <a href="#" onClick="game.pause(); return false;">Pause</a>
 
-<div data-bind="if: currentBid()">
-  <h2>Current Bid: <span data-bind="text: currentBid().to_string()"></span></h2>
-</div>
-
-<div data-bind="foreach: players">
-  <p data-bind="css: { currentBidder: seatNumber == $root.bidder(), lostDie: lostDie, noDice: noDice }">
-    Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
-    <div data-bind="if: isCurrentPlayer()">
-      <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
-      <div data-bind="if: seatNumber == $root.bidder()">
-        Bid:<br />
-        Number: <%= text_field_tag :number %><br />
-        Face Value: <%= select_tag :face_value, options_for_select(1.upto(6)) %><br />
-        <%= submit_tag "BID", id: "bid", "data-bind" => "click: $root.bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().to_string() : '' }, click: $root.plusOne" %><br />
-        <span data-bind="visible: $root.currentBid()">-- OR --</span> <br />
-        <%= submit_tag "BS", id: "bs", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
-      </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12" data-bind="if: currentBid()">
+      <h2>Current Bid: <span data-bind="text: currentBid().to_string()"></span></h2>
     </div>
-  </p>
+  </div>
+
+  <!-- ko foreach: rows -->
+  <div class="row" data-bind="foreach: columns">
+    <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice }">
+      <!-- ko with: player -->
+      Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
+      <div data-bind="if: isCurrentPlayer()">
+        <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
+        <div data-bind="if: seatNumber == $root.bidder()">
+          Bid:<br />
+          Number: <%= text_field_tag :number %><br />
+          Face Value: <%= select_tag :face_value, options_for_select(1.upto(6)) %><br />
+          <%= submit_tag "BID", id: "bid", "data-bind" => "click: $root.bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().to_string() : '' }, click: $root.plusOne" %><br />
+          <span data-bind="visible: $root.currentBid()">-- OR --</span> <br />
+          <%= submit_tag "BS", id: "bs", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
+        </div>
+      </div>
+      <!-- /ko -->
+    </div>
+  </div>
+  <!-- /ko -->
 </div>
 
 <% content_for :javascripts do %>
