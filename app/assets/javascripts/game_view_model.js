@@ -39,6 +39,9 @@ function GameViewModel(urls) {
                 arr.push(row)
                 break;
             }
+        if (arr.length == 0)
+            // Just punt for now if there's no currentPlayer
+            return [];
 
         if (self.players().length == 2) {
             // 2 players is a special case.  The non-current player goes in the middle of the top row.
