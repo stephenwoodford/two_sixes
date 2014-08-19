@@ -3,7 +3,7 @@ body {
 }
 
 .currentBidder {
-    background: aquamarine;
+    background: #dff0d8;
 }
 
 .lostDie {
@@ -11,7 +11,7 @@ body {
 }
 
 .noDice {
-    background: lightgray;
+    background: #ccc;
 }
 
 .gameRow {
@@ -19,9 +19,13 @@ body {
      font-size: 16px;
 }
 
-.currentPlayer {
-     border: 1px solid blueviolet;
+div.player {
+     border-radius: 10px;
      padding: 10px 15px;
+}
+
+.currentPlayer {
+     border: 1px solid #d6e9c6;
 }
 
 .calledBS {
