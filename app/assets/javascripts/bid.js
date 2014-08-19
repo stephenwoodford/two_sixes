@@ -7,6 +7,9 @@ Bid = function (number, faceValue) {
     }
 
     this.to_string = function() {
-        return this.number + " " + this.faceValue + "s";
+        var ret = this.number + " " + this.faceValue;
+        if (this.number != 1)
+            ret += "s";
+        return ret;
     }
 }
