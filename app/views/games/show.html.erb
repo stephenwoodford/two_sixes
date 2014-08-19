@@ -3,15 +3,29 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-12" data-bind="if: currentBid()">
-      <h2>Current Bid: <span data-bind="text: currentBid().to_string()"></span></h2>
+      <h2>
+        Current Bid: <span data-bind="text: currentBid().to_string()"></span>
+        <!-- ko if: diceTotal() -->
+        <br>
+        Total: <span data-bind="text: diceTotal().to_string()"></span>.
+        <!-- ko if: dieLoser() -->
+        <span data-bind="text: dieLoser().handle"></span> loses a die.
+        <!-- /ko -->
+        <!-- /ko -->
+      </h2>
     </div>
   </div>
 
   <!-- ko foreach: rows -->
   <div class="row gameRow" data-bind="foreach: columns">
-    <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice, currentPlayer: player.isCurrentPlayer }">
+    <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice, currentPlayer: player.isCurrentPlayer, calledBS: player.calledBS }">
       <!-- ko with: player -->
       Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
+      <p data-bind="if: calledBS()">Called BS</p>
+      <p data-bind="if: lostDie()">Lost Die</p>
+      <!-- ko if: diceTotal() >= 0 -->
+      Total: <span data-bind="text: diceTotal"></span>
+      <!-- /ko -->
       <div data-bind="if: isCurrentPlayer()">
         <span data-bind="text: diceIcons" style="font-size: 42px;"></span><br />
         <div data-bind="if: seatNumber == $root.bidder()">

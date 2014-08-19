@@ -11,6 +11,7 @@ function GameViewModel(urls) {
     this.eventHandlers = {};
     this.events = [];
     this.processing = false;
+    this.diceTotal = ko.observable();
 
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
@@ -23,6 +24,13 @@ function GameViewModel(urls) {
                 return player;
         }
     }
+    self.dieLoser = ko.computed(function() {
+        for (var i = 0; i < self.players().length; i++) {
+            player = self.players()[i];
+            if (player.lostDie())
+                return player;
+        }
+    }, this);
 
     /* Layout players on the board in rows.  The current player goes on the bottom in the middle,
      * all other rows have a player on the left and a player on the right, with 3 players in the top
@@ -72,7 +80,7 @@ function GameViewModel(urls) {
                     row.addColumn("col-md-3", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
                 }
                 row.addColumn("col-md-3 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
-                
+
                 arr.unshift(row);
             }
         }
@@ -162,17 +170,26 @@ function GameViewModel(urls) {
             for (var i = 0; i < event.data.players.length; i++) {
                 var playerData = event.data.players[i];
                 var player = self.playerInSeat(playerData.seatNumber);
-                player.lostDie(false);
-                player.hasDice(playerData.hasDice);
+                player.reset(playerData.hasDice);
             }
             self.bidder(event.data.bidder);
             self.currentBid(null);
+            self.diceTotal(null);
         }
         return 0;
     }
     self.eventHandlers["BS"] = function(event) {
-        alert("BS Called");
-        return 0;
+        var total = 0;
+        for (var i = 0; i < self.players().length; i++) {
+            var player = self.playerInSeat(i);
+            player.diceTotal(event.data.totals[i]);
+            total += event.data.totals[i];
+            if (i == event.data.seat)
+                player.calledBS(true);
+        }
+        self.diceTotal(new Bid(total, self.currentBid().faceValue));
+
+        return 2000;
     }
     self.eventHandlers["Bid"] = function(event) {
         var bid = new Bid(event.data.number, event.data.faceValue);
