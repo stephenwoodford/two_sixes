@@ -31,7 +31,7 @@
         <div data-bind="if: seatNumber == $root.bidder()">
           Bid:<br />
           <%= text_field_tag :number, '', placeholder: "#" %>
-          <%= select_tag :face_value, options_for_select(1.upto(6)) %><br />
+          <%= select_tag :face_value, options_for_select([['⚀', 1], ['⚁', 2], ['⚂', 3], ['⚃', 4], ['⚄', 5], ['⚅', 6]]) %><br />
           <%= submit_tag "BID", id: "bid", "data-bind" => "click: $root.bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().toString() : '' }, click: $root.plusOne" %><br />
           <span data-bind="visible: $root.currentBid()">-- OR --</span> <br />
           <%= submit_tag "BS", id: "bs", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
