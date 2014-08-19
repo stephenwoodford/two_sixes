@@ -6,7 +6,7 @@ Bid = function (number, faceValue) {
         return new Bid(this.number + 1, this.faceValue);
     }
 
-    this.to_string = function() {
+    this.toString = function() {
         var ret = this.number + " " + this.faceValue;
         if (this.number != 1)
             ret += "s";

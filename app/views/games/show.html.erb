@@ -4,10 +4,10 @@
   <div class="row">
     <div class="col-md-12" data-bind="if: currentBid()">
       <h2>
-        Current Bid: <span data-bind="text: currentBid().to_string()"></span>
+        Current Bid: <span data-bind="text: currentBid().toString()"></span>
         <!-- ko if: diceTotal() -->
         <br>
-        Total: <span data-bind="text: diceTotal().to_string()"></span>.
+        Total: <span data-bind="text: diceTotal().toString()"></span>.
         <!-- ko if: dieLoser() -->
         <span data-bind="text: dieLoser().handle"></span> loses a die.
         <!-- /ko -->
@@ -32,7 +32,7 @@
           Bid:<br />
           Number: <%= text_field_tag :number %><br />
           Face Value: <%= select_tag :face_value, options_for_select(1.upto(6)) %><br />
-          <%= submit_tag "BID", id: "bid", "data-bind" => "click: $root.bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().to_string() : '' }, click: $root.plusOne" %><br />
+          <%= submit_tag "BID", id: "bid", "data-bind" => "click: $root.bid" %> <%= submit_tag "+1", id: "plusOne", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().toString() : '' }, click: $root.plusOne" %><br />
           <span data-bind="visible: $root.currentBid()">-- OR --</span> <br />
           <%= submit_tag "BS", id: "bs", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
         </div>
