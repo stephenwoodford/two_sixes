@@ -10,6 +10,34 @@ body {
 
 .currentPlayer {
      border: 1px solid #e07938;
+     hr {
+       border-top: 1px solid #e07938;
+       margin: 10px 0;
+     }
+     .btn {
+       margin-top: 10px;
+     }
+     #number {
+       width: 30px;
+       margin: 10px 10px 10px 0;
+     }
+     #face_value {
+       margin-top: 5px;
+       font-size: 30px;
+       border: 1px solid #ccc;
+     }
+     #bid {
+       width: 75px;
+       border-right-color: #fff;
+     }
+     #bs {
+       width: 75px;
+       margin-left: 20px;
+     }
+     #plusOne {
+       width: 50px;
+       border-left-color: #fff;
+     }
 }
 
 .currentBidder {
@@ -33,13 +61,3 @@ body {
      border: 1px solid red;
 }
 
-#number {
-     width: 30px;
-     margin: 10px 10px 10px 0;
-}
-
-#face_value {
-     margin-top: 5px;
-     font-size: 30px;
-     border: 1px solid #ccc;
-}
