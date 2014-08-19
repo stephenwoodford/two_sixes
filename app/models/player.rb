@@ -22,7 +22,7 @@ class Player < ActiveRecord::Base
   end
 
   def has_dice?
-    dice_count > 0
+    dice_count && dice_count > 0
   end
 
   def lose_die
