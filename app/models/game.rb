@@ -41,7 +41,7 @@ class Game < ActiveRecord::Base
     raise UsageError.new "Unable to end round before starting a round." unless round
 
     round.finish
-    if players.with_dice.any?
+    if players.with_dice.count > 1
       start_round
     else
       finish
