@@ -3,6 +3,6 @@ class DieLostEvent < ActiveRecord::Base
   belongs_to :player
 
   def to_hash
-    { seat: player.seat }
+    { seat: player.seat, description: description }
   end
 end

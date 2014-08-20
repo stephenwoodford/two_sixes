@@ -16,33 +16,42 @@
     </div>
   </div>
 
-  <!-- ko foreach: rows -->
-  <div class="row gameRow" data-bind="foreach: columns">
-    <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice, currentPlayer: player.isCurrentPlayer, calledBS: player.calledBS, player: true }">
-      <!-- ko with: player -->
-      Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
-      <p data-bind="if: calledBS()">Called BS</p>
-      <p data-bind="if: lostDie()">Lost Die</p>
-      <!-- ko if: diceTotal() >= 0 -->
-      Total: <span data-bind="text: diceTotal"></span>
-      <!-- /ko -->
-      <div data-bind="if: isCurrentPlayer()">
-        <span data-bind="text: diceIcons" style="font-size: 42px;"></span>
-        <div data-bind="if: seatNumber == $root.bidder()" style="margin-top: -5px">
-          <hr />
-          <%= text_field_tag :number, '', placeholder: "#" %>
-          <%= select_tag :face_value, options_for_select([['⚀', 1], ['⚁', 2], ['⚂', 3], ['⚃', 4], ['⚄', 5], ['⚅', 6]]) %><br />
-          <div class="btn-group">
-            <%= submit_tag "BID", id: "bid", class: "btn btn-primary", "data-bind" => "click: $root.bid" %>
-            <%= submit_tag "+1", id: "plusOne", class: "btn btn-primary", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().toString() : '' }, click: $root.plusOne" %>
+  <div class="row">
+    <div class="col-md-9">
+      <!-- ko foreach: rows -->
+      <div class="row gameRow" data-bind="foreach: columns">
+        <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice, currentPlayer: player.isCurrentPlayer, calledBS: player.calledBS, player: true }">
+          <!-- ko with: player -->
+          Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
+          <p data-bind="if: calledBS()">Called BS</p>
+          <p data-bind="if: lostDie()">Lost Die</p>
+          <!-- ko if: diceTotal() >= 0 -->
+          Total: <span data-bind="text: diceTotal"></span>
+          <!-- /ko -->
+          <div data-bind="if: isCurrentPlayer()">
+            <span data-bind="text: diceIcons" style="font-size: 42px;"></span>
+            <div data-bind="if: seatNumber == $root.bidder()" style="margin-top: -5px">
+              <hr />
+              <%= text_field_tag :number, '', placeholder: "#" %>
+              <%= select_tag :face_value, options_for_select([['⚀', 1], ['⚁', 2], ['⚂', 3], ['⚃', 4], ['⚄', 5], ['⚅', 6]]) %><br />
+              <div class="btn-group">
+                <%= submit_tag "BID", id: "bid", class: "btn btn-primary", "data-bind" => "click: $root.bid" %>
+                <%= submit_tag "+1", id: "plusOne", class: "btn btn-primary", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().toString() : '' }, click: $root.plusOne" %>
+              </div>
+              <%= submit_tag "BS", id: "bs", class: "btn btn-danger", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
+            </div>
           </div>
-          <%= submit_tag "BS", id: "bs", class: "btn btn-danger", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
+          <!-- /ko -->
         </div>
       </div>
       <!-- /ko -->
     </div>
+    <div class="col-md-3" data-bind="foreach: log">
+      <div class="panel panel-default">
+        <div class="panel-body" data-bind="text: $data"></div>
+      </div>
+    </div>
   </div>
-  <!-- /ko -->
 </div>
 
 <% content_for :javascripts do %>
@@ -61,6 +70,10 @@
         player.assignDice(<%= player.dice %>);
       <% end %>
       game.addPlayer(player);
+    <% end %>
+
+    <% @game.die_lost_events.each do |event| %>
+      game.addDieLostDescription("<%= event.description %>");
     <% end %>
 
     ko.applyBindings(game);

@@ -163,4 +163,8 @@ class Game < ActiveRecord::Base
     invites.open.each(&:revoke)
     invites.declined.each(&:revoke)
   end
+
+  def die_lost_events
+    events.where(action_type: "DieLostEvent").map(&:action)
+  end
 end
