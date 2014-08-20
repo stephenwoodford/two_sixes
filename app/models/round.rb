@@ -30,6 +30,7 @@ class Round < ActiveRecord::Base
   def after_finish
     event = DieLostEvent.new
     event.round = self
+    desc = []
     if current_call.bs?
       event.final_number = total(current_bid.face_value)
 
@@ -38,11 +39,24 @@ class Round < ActiveRecord::Base
       else
         self.loser = previous_call.player
       end
+
+      desc << "#{previous_call.player.handle} bid #{previous_call}."
+      desc << "#{current_call.player.handle} called BS."
+      if event.final_number == 1
+        desc << "There was 1 #{previous_call.face_value}."
+      else
+        desc << "There were #{event.final_number} #{previous_call.face_value}s."
+      end
     else
+      desc << "There was an illegal bid."
       self.loser = current_bid.player
     end
+    desc << "#{loser.handle} lost a die."
+
     save
+
     event.player = loser
+    event.description = desc.join(" ")
     event.save
 
     loser.lose_die

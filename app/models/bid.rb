@@ -15,4 +15,8 @@ class Bid
       number > bid.number
     end
   end
+
+  def to_s
+    "#{number} #{face_value}#{'s' unless number == 1}"
+  end
 end

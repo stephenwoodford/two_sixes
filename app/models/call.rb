@@ -14,6 +14,14 @@ class Call < ActiveRecord::Base
     ret
   end
 
+  def to_s
+    if bid
+      bid.to_s
+    else
+      "BS"
+    end
+  end
+
   def bid
     return nil if bs?
     Bid.new number, face_value
