@@ -1,5 +1,3 @@
-DICE_ICONS = [0, '⚀','⚁','⚂','⚃','⚄','⚅'];
-
 Player = function (obj) {
     this.seatNumber = obj["seatNumber"];
     this.handle = obj["handle"];

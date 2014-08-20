@@ -12,4 +12,8 @@ Bid = function (number, faceValue) {
             ret += "s";
         return ret;
     }
+
+    this.toDice = function() {
+        return this.number + ' ' + DICE_ICONS[this.faceValue];
+    };
 }
