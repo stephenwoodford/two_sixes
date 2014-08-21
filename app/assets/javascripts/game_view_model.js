@@ -268,7 +268,7 @@ function GameViewModel(urls) {
             return;
         }
 
-        jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
+        var jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
             self.events = self.events.concat(data);
             self.process();
         });
