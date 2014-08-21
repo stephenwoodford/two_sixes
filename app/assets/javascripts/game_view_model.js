@@ -258,14 +258,17 @@ function GameViewModel(urls) {
     }
 
     self.loop = function() {
+        if (self.processing || self.paused) {
+            setTimeout(self.loop, 2000);
+            return;
+        }
+
         jqxhr = $.get(self.eventsUrl, { prev_event: self.highwaterMark}, function(data){
             self.events = self.events.concat(data);
-            if (!self.processing)
-                self.process();
+            self.process();
         });
         jqxhr.always(function(){
-            if (!self.paused)
-                setTimeout(self.loop, 2000);
+            setTimeout(self.loop, 2000);
         });
     }
 
