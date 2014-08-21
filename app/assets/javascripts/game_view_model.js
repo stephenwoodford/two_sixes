@@ -15,7 +15,6 @@ function GameViewModel(urls) {
     this.processing = false;
     this.diceTotal = ko.observable();
     this.bidMade = ko.observable(false);
-
     this.log = ko.observable(new Log());
 
     self.players = ko.observableArray();
@@ -177,10 +176,7 @@ function GameViewModel(urls) {
                 var player = self.playerInSeat(playerData.seatNumber);
                 player.reset(playerData.hasDice);
             }
-            self.bidder(event.data.bidder);
-            self.bidMade(false);
-            self.currentBid(null);
-            self.diceTotal(null);
+            self.reset(event.data.bidder);
             self.log().addRound();
         }
         return 0;
@@ -291,5 +287,12 @@ function GameViewModel(urls) {
             // Convert a negative adjustment to the corresponding positive adjustment
             adjust = self.players().length + (adjust % self.players().length);
         return (seat + adjust) % self.players().length;
+    }
+
+    self.reset = function(startingSeat) {
+        self.bidder(startingSeat);
+        self.bidMade(false);
+        self.currentBid(null);
+        self.diceTotal(null);
     }
 }
