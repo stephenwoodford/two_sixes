@@ -14,6 +14,7 @@ function GameViewModel(urls) {
     this.events = [];
     this.processing = false;
     this.diceTotal = ko.observable();
+    this.bidMade = ko.observable(false);
 
     this.log = ko.observable(new Log());
 
@@ -177,6 +178,7 @@ function GameViewModel(urls) {
                 player.reset(playerData.hasDice);
             }
             self.bidder(event.data.bidder);
+            self.bidMade(false);
             self.currentBid(null);
             self.diceTotal(null);
             self.log().addRound();
@@ -201,6 +203,7 @@ function GameViewModel(urls) {
         self.currentBid(bid);
         self.log().addBid(self.playerInSeat(event.data.seat), bid);
         self.bidder(self.nextBidder());
+        self.bidMade(false);
         return 1000;
     }
     self.eventHandlers["Die Lost"] = function(event) {
@@ -228,11 +231,13 @@ function GameViewModel(urls) {
         self.submitBid(bid);
     }
     self.submitBid = function(bid) {
+        self.bidMade(true);
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
             alert("successful bid.")
         });
     }
     self.bs = function() {
+        self.bidMade(true);
         $.post(self.bsUrl, {}, function(data) {
             alert("successful bs.")
         });

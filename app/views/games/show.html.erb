@@ -34,11 +34,13 @@
               <hr />
               <%= text_field_tag :number, '', placeholder: "#" %>
               <%= select_tag :face_value, options_for_select([['⚀', 1], ['⚁', 2], ['⚂', 3], ['⚃', 4], ['⚄', 5], ['⚅', 6]]) %><br />
-              <div class="btn-group">
-                <%= submit_tag "BID", id: "bid", class: "btn btn-primary", "data-bind" => "click: $root.bid" %>
-                <%= submit_tag "+1", id: "plusOne", class: "btn btn-primary", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().toString() : '' }, click: $root.plusOne" %>
+              <div data-bind="if: !$root.bidMade()">
+                <div class="btn-group">
+                  <%= submit_tag "BID", id: "bid", class: "btn btn-primary", "data-bind" => "click: $root.bid" %>
+                  <%= submit_tag "+1", id: "plusOne", class: "btn btn-primary", "data-bind" => "visible: $root.currentBid(), attr: { title: $root.currentBid() ? $root.currentBid().plusOne().toString() : '' }, click: $root.plusOne" %>
+                </div>
+                <%= submit_tag "BS", id: "bs", class: "btn btn-danger", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
               </div>
-              <%= submit_tag "BS", id: "bs", class: "btn btn-danger", "data-bind" => "visible: $root.currentBid(), click: $root.bs" %>
             </div>
           </div>
           <!-- /ko -->
