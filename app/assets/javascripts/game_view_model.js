@@ -14,11 +14,8 @@ function GameViewModel(urls) {
     this.events = [];
     this.processing = false;
     this.diceTotal = ko.observable();
-    this.log = ko.observableArray();
 
-    self.addDieLostDescription = function(desc) {
-        self.log.unshift(desc);
-    }
+    this.log = ko.observable(new Log());
 
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
@@ -182,6 +179,7 @@ function GameViewModel(urls) {
             self.bidder(event.data.bidder);
             self.currentBid(null);
             self.diceTotal(null);
+            self.log().addRound();
         }
         return 0;
     }
@@ -201,13 +199,14 @@ function GameViewModel(urls) {
     self.eventHandlers["Bid"] = function(event) {
         var bid = new Bid(event.data.number, event.data.faceValue);
         self.currentBid(bid);
+        self.log().addBid(self.playerInSeat(event.data.seat), bid);
         self.bidder(self.nextBidder());
         return 1000;
     }
     self.eventHandlers["Die Lost"] = function(event) {
         var player = self.playerInSeat(event.data.seat);
         player.lostDie(true);
-        self.addDieLostDescription(event.data.description);
+        self.log().addDieLost(event.data.description);
 
         return 10000;
     }

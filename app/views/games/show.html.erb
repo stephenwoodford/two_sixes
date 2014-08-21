@@ -46,9 +46,14 @@
       </div>
       <!-- /ko -->
     </div>
-    <div class="col-md-3" data-bind="foreach: log">
+    <div class="col-md-3" data-bind="foreach: log().rounds">
       <div class="panel panel-default">
-        <div class="panel-body" data-bind="text: $data"></div>
+        <div class="panel-heading" data-bind="visible: !live(), text: description, click: function(event){ this.show(!this.show()); }"></div>
+        <div class="panel-body" data-bind="visible: showBody()">
+          <ul data-bind="foreach: events">
+            <li data-bind="text: $data"></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -72,8 +77,10 @@
       game.addPlayer(player);
     <% end %>
 
+   game.log().addRound();
     <% @game.die_lost_events.each do |event| %>
-      game.addDieLostDescription("<%= event.description %>");
+      game.log().addDieLost("<%= event.description %>");
+      game.log().addRound();
     <% end %>
 
     ko.applyBindings(game);
