@@ -49,7 +49,7 @@
       <!-- /ko -->
     </div>
     <div class="col-md-3" data-bind="foreach: log().rounds">
-      <div class="panel panel-default">
+      <div data-bind="css: { panel: true, 'panel-default': !playerLostDie(), 'panel-danger': playerLostDie() }">
         <div class="panel-heading" data-bind="visible: !live(), text: description, click: function(event){ this.show(!this.show()); }"></div>
         <div class="panel-body" data-bind="visible: showBody()">
           <ul data-bind="foreach: events">
