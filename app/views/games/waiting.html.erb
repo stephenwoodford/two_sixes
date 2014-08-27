@@ -1,38 +1,58 @@
-<div>
-  Waiting for game #<%= @game.id %> to begin.
-</div>
-
-<div>
-  Players:<br>
-  <ul data-bind="foreach: players">
-    <li data-bind="text: handle"></li>
-  </ul>
-</div>
-
-<div>
-  Open Invites:<br>
-  <ul data-bind="foreach: openInvites">
-    <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
-  </ul>
-
-  Declined Invites:<br>
-  <ul data-bind="foreach: declinedInvites">
-    <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
-  </ul>
-
-  <% if @can_invite %>
-    <%= form_for :invite, url: invite_game_path(@game) do |f| %>
-      Email: <%= f.text_field :email %>
-      <%= f.submit "Invite" %>
-    <% end %>
-  <% end %>
-</div>
-
-<% if @is_owner %>
-  <div>
-    <%= link_to "Start", start_game_path(@game), method: :post %>
+<div class="container-fluid waiting-container">
+  <div class="row">
+    <div class="col-md-7 col-md-offset-1">
+      <div class="panel waiting-panel">
+        Waiting for game #<%= @game.id %> to begin.
+      </div>
+    </div>
   </div>
-<% end %>
+
+  <div class="row">
+    <div class="col-md-3 col-md-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading">Players</div>
+        <div class="panel-body">
+          <ul data-bind="foreach: players">
+            <li data-bind="text: handle"></li>
+          </ul>
+        </div>
+      </div>
+
+      <% if @is_owner %>
+        <%= link_to "Start", start_game_path(@game), method: :post, class: "btn btn-lg btn-success btn-block" %>
+      <% end %>
+    </div>
+
+    <div class="col-md-3 col-md-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading">Open Invites</div>
+        <div class="panel-body">
+          <ul data-bind="foreach: openInvites">
+            <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">Declined Invites</div>
+        <div class="panel-body">
+          <ul data-bind="foreach: declinedInvites">
+            <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
+          </ul>
+        </div>
+      </div>
+
+      <% if @can_invite %>
+        
+          <%= form_for :invite, url: invite_game_path(@game), html: { class: "invite-form" } do |f| %>
+            <%= f.text_field :email, placeholder: "Email", class: "form-control" %>
+            <%= f.submit "Invite", class: "btn btn-primary" %>
+          <% end %>
+        
+      <% end %>
+    </div>
+  </div>
+</div>
 
 <% content_for :javascripts do %>
   <script type="text/javascript">
