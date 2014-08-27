@@ -106,6 +106,11 @@ function GameViewModel(urls) {
             return invite.isDeclined();
         });
     }, this);
+    self.openAndDeclinedInvites = ko.computed(function(){
+        return this.invites().filter(function(invite){
+            return invite.isOpen() || invite.isDeclined();
+        });
+    }, this);
     self.inviteIndex = function(email) {
         for (var i = 0; i < self.invites().length; i++)
             if (self.invites()[i].email == email)

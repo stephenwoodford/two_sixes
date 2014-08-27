@@ -25,19 +25,10 @@
 
     <div class="col-md-3 col-md-offset-1">
       <div class="panel panel-default">
-        <div class="panel-heading">Open Invites</div>
+        <div class="panel-heading">Invites</div>
         <div class="panel-body">
-          <ul data-bind="foreach: openInvites">
-            <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading">Declined Invites</div>
-        <div class="panel-body">
-          <ul data-bind="foreach: declinedInvites">
-            <li><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
+          <ul class="list-group" data-bind="foreach: openAndDeclinedInvites">
+            <li data-bind="css: { 'list-group-item': true, 'list-group-item-info': isOpen(), 'list-group-item-danger': isDeclined()}"><span data-bind="text: email" style="margin: 0 10px 0 0;"></span><!-- ko if: canRevoke -->(<a data-bind="attr: { href: revokeUrl }" data-method="post" rel="nofollow">Revoke</a>)<!-- /ko --></li>
           </ul>
         </div>
       </div>
