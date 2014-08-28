@@ -62,28 +62,31 @@ function GameViewModel(urls) {
             topRow.addColumn("col-md-3 col-md-offset-4", otherPlayer);
             arr.unshift(topRow);
         } else {
-            var rowCount = Math.ceil(self.players().length / 2);
             /* Build the rows from the bottom up, it makes computing seats easier.
              * The players in the left column are currentPlayer's seat plus row number, the
              * players in the right column are currentPlayer's seat minus row number (when the bottom row is
              * row 0.)
              * ----------------------------
-             * | x + 3 || (x + 4) || x - 3|
-             * | x + 2 |           | x - 2|
-             * | x + 1 |           | x - 1|
+             *         | (x + 4) |
+             * | x + 3 |         | x - 3|
+             * | x + 2 |         | x - 2|
+             * | x + 1 |         | x - 1|
              *            | x |
              * ----------------------------
-             * The only special case is the top row, where there might be 3 players.
+             * The only special case is the top row, which will only have 1 player if there's an even number of players
              */
+            var rowCount = Math.ceil(self.players().length / 2);
+            if (self.players().length % 2 == 0)
+                rowCount += 1;
             for (var i = 1; i < rowCount; i++) {
                 var row = new Row();
-                row.addColumn("col-md-3 col-md-offset-1", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i)));
                 if (i == rowCount - 1 && self.players().length % 2 == 0) {
-                    // We need 3 in the top row if there's an even number of players
-                    row.addColumn("col-md-3 col-md-offset-1", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i + 1)));
-                    row.addColumn("col-md-3", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
+                    // We need 1 in the top row if there's an even number of players
+                    row.addColumn("col-md-3 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i)));
+                } else {
+                    row.addColumn("col-md-3 col-md-offset-1", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, i)));
+                    row.addColumn("col-md-3 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
                 }
-                row.addColumn("col-md-3 col-md-offset-4", self.playerInSeat(self.adjustSeat(currentPlayer.seatNumber, -i)));
 
                 arr.unshift(row);
             }
