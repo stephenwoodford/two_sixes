@@ -212,7 +212,7 @@ function GameViewModel(urls) {
     }
     self.eventHandlers["Die Lost"] = function(event) {
         var player = self.playerInSeat(event.data.seat);
-        player.lostDie(true);
+        player.loseDie();
         self.log().addDieLost(event.data.description, player.isCurrentPlayer());
 
         return 10000;

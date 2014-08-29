@@ -3,6 +3,7 @@ Player = function (obj) {
     this.handle = obj["handle"];
     this.isCurrentPlayer = ko.observable(false);
     this.diceArray = ko.observableArray();
+    this.diceCount = ko.observable(obj["diceCount"]);
     this.lostDie = ko.observable(false);
     this.hasDice = ko.observable(obj["hasDice"] || false);
     this.diceTotal = ko.observable(-1);
@@ -27,7 +28,16 @@ Player = function (obj) {
         }
     }, this);
 
+    this.hiddenDiceIcons = ko.computed(function() {
+        return Array(this.diceCount()+1).join("◘");
+    }, this);
+
     this.noDice = ko.computed(function() {
         return !this.hasDice();
     }, this);
+
+    this.loseDie = function() {
+        this.lostDie(true);
+        this.diceCount(this.diceCount() - 1);
+    }
 }

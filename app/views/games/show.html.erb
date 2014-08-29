@@ -22,7 +22,7 @@
       <div class="row gameRow" data-bind="foreach: columns">
         <div data-bind="attr: { 'class': cssClass }, css: { currentBidder: player.seatNumber == $root.bidder(), lostDie: player.lostDie, noDice: player.noDice, currentPlayer: player.isCurrentPlayer, calledBS: player.calledBS, player: true }">
           <!-- ko with: player -->
-          Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span><br />
+          Seat <span data-bind="text: seatNumber"></span>: <span data-bind="text: handle"></span> <span data-bind="if: !isCurrentPlayer()"><span data-bind="text: hiddenDiceIcons"></span></span><br />
           <p data-bind="if: calledBS()">Called BS</p>
           <p data-bind="if: lostDie()">Lost Die</p>
           <!-- ko if: diceTotal() >= 0 -->
