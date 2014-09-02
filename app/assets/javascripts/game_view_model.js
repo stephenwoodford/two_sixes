@@ -231,8 +231,11 @@ function GameViewModel(urls) {
         var number = parseInt($("#number").val());
         var faceValue = parseInt($("#face_value").val());
         var bid = new Bid(number, faceValue);
-
-        self.submitBid(bid);
+        
+        if (self.currentBid() && bid.lessThanOrEqual(self.currentBid()))
+            alert("Illegal bid.  Please try again.");
+        else
+            self.submitBid(bid);
     }
     self.submitBid = function(bid) {
         self.bidMade(true);
