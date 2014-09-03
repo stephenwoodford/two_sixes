@@ -38,13 +38,16 @@ RoundLog = function() {
         this.description(description);
         this.playerLostDie(playerLost || false);
     }
-    this.showBody = ko.computed(function(){
-        return this.live() || this.show();
-    }, this);
-
     this.addRoll = function(player, dice) {
         this.diceRolls().push(new DiceRollLog(player, dice));
     }
+
+    this.showBody = ko.computed(function(){
+        return this.live() || this.show();
+    }, this);
+    this.showDice = ko.computed(function() {
+        return this.diceRolls().length > 0;
+    }, this);
 }
 
 DiceRollLog = function(player, dice) {
