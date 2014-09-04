@@ -5,6 +5,7 @@ function GameViewModel(urls) {
     this.eventsUrl = urls["events"];
     this.bidUrl = urls["bid"];
     this.bsUrl = urls["bs"];
+    this.commentsUrl = urls["comments"];
     this.highwaterMark = -1;
     this.bidder = ko.observable(0);
     this.waiting = false;
@@ -16,6 +17,9 @@ function GameViewModel(urls) {
     this.diceTotal = ko.observable();
     this.bidMade = ko.observable(false);
     this.log = ko.observable(new Log());
+    this.chat = ko.observable(new Chat());
+    this.message = ko.observable("");
+    var chat_room = $('#chat ul');
 
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
@@ -145,6 +149,13 @@ function GameViewModel(urls) {
         else
             return 0;
     }
+    self.eventHandlers["Comment"] = function(event) {
+        var player = self.playerInSeat(event.data.seatNumber);
+        if (!player.isCurrentPlayer())
+            self.addComment(player, event.data.message);
+
+        return 0;
+    }
     self.eventHandlers["Player Added"] = function(event) {
         self.addPlayer(new Player(event.data));
         return 0;
@@ -236,7 +247,7 @@ function GameViewModel(urls) {
         var number = parseInt($("#number").val());
         var faceValue = parseInt($("#face_value").val());
         var bid = new Bid(number, faceValue);
-        
+
         if (self.currentBid() && bid.lessThanOrEqual(self.currentBid()))
             alert("Illegal bid.  Please try again.");
         else
@@ -311,4 +322,34 @@ function GameViewModel(urls) {
         self.currentBid(null);
         self.diceTotal(null);
     }
+
+    //Chat
+    self.postComment = function() {
+        var currentPlayer;
+        for (var i = 0; i < self.players().length; i++)
+            if (self.players()[i].isCurrentPlayer()) {
+              currentPlayer = self.players()[i];
+            }
+
+        if (this.message() != "") {
+            //Push comment to server
+            $.post(self.commentsUrl, { message: this.message() }, function(data) {
+                //commented
+            });
+
+            this.addComment(currentPlayer, this.message());
+            this.message("");
+        }
+
+        return;
+    };
+
+    self.addComment = function(player, message) {
+        this.chat().add(player, message);
+
+        var height = chat_room[0].scrollHeight;
+        chat_room.scrollTop(height + 100);
+
+        return;
+    };
 }
