@@ -198,6 +198,11 @@ function GameViewModel(urls) {
             if (i == event.data.seat)
                 player.calledBS(true);
         }
+        for (var i = 0; i < event.data.dice.length; i++) {
+            var roll = event.data.dice[i];
+            var player = self.playerInSeat(roll.seatNumber);
+            self.log().addRoll(player, roll.dice);
+        }
         self.diceTotal(new Bid(total, self.currentBid().faceValue));
 
         return 2000;

@@ -50,6 +50,42 @@
       <div data-bind="css: { panel: true, 'panel-default': !playerLostDie(), 'panel-danger': playerLostDie() }">
         <div class="panel-heading" data-bind="visible: !live(), text: description, click: function(event){ this.show(!this.show()); }"></div>
         <div class="panel-body" data-bind="visible: showBody()">
+          <table data-bind="if: showDice()" class="diceTable">
+            <thead>
+              <tr>
+                <th>Seat</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ko foreach: diceRolls -->
+              <tr>
+                <td data-bind="text: player().handle"></td>
+                <td data-bind="text: ones()"></td>
+                <td data-bind="text: twos()"></td>
+                <td data-bind="text: threes()"></td>
+                <td data-bind="text: fours()"></td>
+                <td data-bind="text: fives()"></td>
+                <td data-bind="text: sixes()"></td>
+              </tr>
+              <!-- /ko -->
+              <tr class="diceTotals">
+                <td>Totals</td>
+                <td data-bind="text: ones()"></td>
+                <td data-bind="text: twos()"></td>
+                <td data-bind="text: threes()"></td>
+                <td data-bind="text: fours()"></td>
+                <td data-bind="text: fives()"></td>
+                <td data-bind="text: sixes()"></td>
+              </tr>
+            </tbody>
+          </table>
+
           <ul data-bind="foreach: events">
             <li data-bind="text: $data"></li>
           </ul>
