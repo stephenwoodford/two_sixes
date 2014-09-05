@@ -54,27 +54,31 @@ DiceRollLog = function(player, dice) {
     this.player = ko.observable(player);
     this.dice = ko.observableArray(dice);
 
-    this.ones = ko.computed(function(){
-        return this.dice().filter(function(die) { return die == 1; }).length;
-    }, this);
+    this.count = function(face_value) {
+        return this.dice().filter(function(die) { return die == face_value; }).length;
+    }
 
-    this.twos = ko.computed(function(){
-        return this.dice().filter(function(die) { return die == 2; }).length;
-    }, this);
+    this.ones = function(){
+        return this.count(1);
+    }
 
-    this.threes = ko.computed(function(){
-        return this.dice().filter(function(die) { return die == 3; }).length;
-    }, this);
+    this.twos = function(){
+        return this.count(2);
+    }
 
-    this.fours = ko.computed(function(){
-        return this.dice().filter(function(die) { return die == 4; }).length;
-    }, this);
+    this.threes = function(){
+        return this.count(3);
+    }
 
-    this.fives = ko.computed(function(){
-        return this.dice().filter(function(die) { return die == 5; }).length;
-    }, this);
+    this.fours = function(){
+        return this.count(4);
+    }
 
-    this.sixes = ko.computed(function(){
-        return this.dice().filter(function(die) { return die == 6; }).length;
-    }, this);
+    this.fives = function(){
+        return this.count(5);
+    }
+
+    this.sixes = function(){
+        return this.count(6);
+    }
 }
