@@ -48,6 +48,32 @@ RoundLog = function() {
     this.showDice = ko.computed(function() {
         return this.diceRolls().length > 0;
     }, this);
+
+    this.count = function(face_value) {
+        var ret = 0;
+        for (var i = 0; i < this.diceRolls().length; i++) {
+            ret += this.diceRolls()[i].count(face_value);
+        }
+        return ret;
+    }
+    this.ones = function() {
+        return this.count(1);
+    }
+    this.twos = function(){
+        return this.count(2);
+    }
+    this.threes = function(){
+        return this.count(3);
+    }
+    this.fours = function(){
+        return this.count(4);
+    }
+    this.fives = function(){
+        return this.count(5);
+    }
+    this.sixes = function(){
+        return this.count(6);
+    }
 }
 
 DiceRollLog = function(player, dice) {
@@ -61,23 +87,18 @@ DiceRollLog = function(player, dice) {
     this.ones = function(){
         return this.count(1);
     }
-
     this.twos = function(){
         return this.count(2);
     }
-
     this.threes = function(){
         return this.count(3);
     }
-
     this.fours = function(){
         return this.count(4);
     }
-
     this.fives = function(){
         return this.count(5);
     }
-
     this.sixes = function(){
         return this.count(6);
     }
