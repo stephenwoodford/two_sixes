@@ -39,7 +39,7 @@ RoundLog = function() {
         this.playerLostDie(playerLost || false);
     }
     this.addRoll = function(player, dice) {
-        this.diceRolls().push(new DiceRollLog(player, dice));
+        this.diceRolls.push(new DiceRollLog(player, dice));
     }
 
     this.showBody = ko.computed(function(){
