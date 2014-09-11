@@ -52,7 +52,7 @@
       </ul>
 
       <form data-bind="submit: postComment">
-        <textarea data-bind='value: message, valueUpdate: "afterkeydown"'></textarea>
+        <textarea id="chatMessage" data-bind='value: message, valueUpdate: "afterkeydown"'></textarea>
         <button type="submit" data-bind="enable: message().length > 0" class="btn btn-primary">Comment</button>
       </form>
     </div>

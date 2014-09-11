@@ -339,6 +339,7 @@ function GameViewModel(urls) {
 
             this.addComment(currentPlayer, this.message());
             this.message("");
+            document.getElementById("chatMessage").focus();
         }
 
         return;
