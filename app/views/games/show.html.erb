@@ -51,10 +51,10 @@
         <li style="padding:0 0 5px; list-style:none;"><span class="handle" data-bind="text: player.handle"></span>: <span data-bind="text: message"></span></li>
       </ul>
 
-      <form data-bind="submit: postComment">
-        <textarea id="chatMessage" data-bind='value: message, valueUpdate: "afterkeydown"'></textarea>
-        <button type="submit" data-bind="enable: message().length > 0" class="btn btn-primary">Comment</button>
-      </form>
+      <%= form_tag '', id: "chatForm", "data-bind" => "submit: postComment" do |f| %>
+        <%= text_area_tag "chatMessage", "", placeholder: "Message", id: "chatMessage", "data-bind" => 'value: message, valueUpdate: "afterkeydown"' %>
+        <%= submit_tag "Comment", "data-bind" => "enable: message().length > 0", class: "btn btn-primary" %>
+      <% end %>
     </div>
     <div class="col-md-2" data-bind="foreach: log().rounds">
       <div data-bind="css: { panel: true, 'panel-default': !playerLostDie(), 'panel-danger': playerLostDie() }">
@@ -131,5 +131,14 @@
 
     ko.applyBindings(game);
     game.loop();
+
+    $(function() {
+     $('#chatMessage').bind('keypress', function(e) {
+       if ((e.keyCode || e.which) == 13) {
+         $('#chatForm').submit();
+         return false;
+       }
+     });
+   });
   </script>
 <% end %>
