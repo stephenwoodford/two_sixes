@@ -367,12 +367,24 @@ function GameViewModel(urls) {
     };
 
     self.toggleTurnNotification = function() {
+        self.toggleFavicon();
+        if (self.faviconIsRed())
+            self.toggleTitle();
+    };
+    self.faviconIsRed = function() {
+        return $("#favicon").attr("href") == FAVICON_RED;
+    };
+    self.toggleFavicon = function() {
+        if (self.faviconIsRed())
+            $("#favicon").attr("href", FAVICON_BLACK);
+        else
+            $("#favicon").attr("href", FAVICON_RED);
+    };
+    self.toggleTitle = function() {
         if (document.title == self.initialTitle) {
             document.title = "Your Turn!";
-            $("#favicon").attr("href", FAVICON_RED);
         } else {
             document.title = self.initialTitle;
-            $("#favicon").attr("href", FAVICON_BLACK);
         }
     };
 
