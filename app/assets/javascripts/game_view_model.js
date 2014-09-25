@@ -19,6 +19,7 @@ function GameViewModel(urls) {
     this.log = ko.observable(new Log());
     this.chat = ko.observable(new Chat());
     this.message = ko.observable("");
+    this.toggleFaviconTimer = null;
     var chat_room = $('#chat ul');
 
     self.players = ko.observableArray();
@@ -222,8 +223,7 @@ function GameViewModel(urls) {
         var bid = new Bid(event.data.number, event.data.faceValue);
         self.currentBid(bid);
         self.log().addBid(self.playerInSeat(event.data.seat), bid);
-        self.bidder(self.nextBidder());
-        self.bidMade(false);
+        self.setBidder(self.nextBidder());
         return 1000;
     }
     self.eventHandlers["Die Lost"] = function(event) {
@@ -253,14 +253,19 @@ function GameViewModel(urls) {
         else
             self.submitBid(bid);
     }
-    self.submitBid = function(bid) {
+    self.setBidMade = function() {
+        clearInterval(self.toggleFaviconTimer);
+        self.resetFavicon();
         self.bidMade(true);
+    }
+    self.submitBid = function(bid) {
+        self.setBidMade();
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
             alert("successful bid.")
         });
     }
     self.bs = function() {
-        self.bidMade(true);
+        self.setBidMade();
         $.post(self.bsUrl, {}, function(data) {
             alert("successful bs.")
         });
@@ -316,9 +321,15 @@ function GameViewModel(urls) {
         return (seat + adjust) % self.players().length;
     }
 
-    self.reset = function(startingSeat) {
-        self.bidder(startingSeat);
+    self.setBidder = function(seatNumber) {
+        self.bidder(seatNumber);
+        if (self.playerInSeat(seatNumber).isCurrentPlayer())
+            self.toggleFaviconTimer = setInterval(self.toggleFavicon, 600);
         self.bidMade(false);
+    };
+
+    self.reset = function(startingSeat) {
+        self.setBidder(startingSeat);
         self.currentBid(null);
         self.diceTotal(null);
     }
@@ -352,5 +363,16 @@ function GameViewModel(urls) {
         chat_room.scrollTop(height + 100);
 
         return;
+    };
+
+    self.toggleFavicon = function() {
+        if ($("#favicon").attr("href") == FAVICON_BLACK)
+            $("#favicon").attr("href", FAVICON_RED);
+        else
+            $("#favicon").attr("href", FAVICON_BLACK);
+    };
+
+    self.resetFavicon = function(){
+        $("#favicon").attr("href", FAVICON_BLACK);
     };
 }
