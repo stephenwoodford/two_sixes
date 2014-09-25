@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <%= favicon_link_tag 'favicon.ico', id: "favicon" %>
+  <%= favicon_link_tag 'favicon.ico?v=1', id: "favicon" %>
   <title>LiarsDiceServer</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <script type="text/javascript">
-    var FAVICON_BLACK = "<%= asset_path 'favicon.ico' %>";
-    var FAVICON_RED = "<%= asset_path 'favicon_red.ico' %>";
+    var FAVICON_BLACK = "<%= asset_path 'favicon.ico?v=1' %>";
+    var FAVICON_RED = "<%= asset_path 'favicon_red.ico?v=1' %>";
   </script>
 </head>
 <body>
