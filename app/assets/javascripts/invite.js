@@ -8,6 +8,6 @@ Invite = function (obj) {
     this.isDeclined = ko.computed(function() { return this._declined(); }, this);
     this.isOpen = ko.computed(function() { return !this._accepted() && !this._declined(); }, this);
 
-    this.accept = function() { this._accepted(true); this._declined(false); }
-    this.decline = function() { this._accepted(false); this._declined(true); }
-}
+    this.accept = function() { this._accepted(true); this._declined(false); };
+    this.decline = function() { this._accepted(false); this._declined(true); };
+};
