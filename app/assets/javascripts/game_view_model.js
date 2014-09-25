@@ -26,14 +26,14 @@ function GameViewModel(urls) {
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
         self.players.push(player);
-    }
+    };
     self.playerInSeat = function(seatNumber) {
         for (var i = 0; i < self.players().length; i++) {
             player = self.players()[i];
             if (player.seatNumber == seatNumber)
                 return player;
         }
-    }
+    };
     self.dieLoser = ko.computed(function() {
         for (var i = 0; i < self.players().length; i++) {
             player = self.players()[i];
@@ -54,7 +54,7 @@ function GameViewModel(urls) {
                 var row = new Row();
                 currentPlayer = self.players()[i];
                 row.addColumn("col-md-3 col-md-offset-4", currentPlayer);
-                arr.push(row)
+                arr.push(row);
                 break;
             }
         if (arr.length == 0)
@@ -104,7 +104,7 @@ function GameViewModel(urls) {
     self.invites = ko.observableArray();
     self.addInvite = function(invite) {
         self.invites.push(invite);
-    }
+    };
     self.openInvites = ko.computed(function(){
         return this.invites().filter(function(invite){
             return invite.isOpen();
@@ -125,19 +125,19 @@ function GameViewModel(urls) {
             if (self.invites()[i].email == email)
                 return i;
         return -1;
-    }
+    };
     self.inviteFor = function(email) {
         var indx = self.inviteIndex(email);
         if (indx < 0)
             return;
         return self.invites()[indx];
-    }
+    };
     self.removeInvite = function(email) {
         var indx = self.inviteIndex(email);
         if (indx < 0)
             return;
         self.invites.splice(indx, 1);
-    }
+    };
 
     /*
        Call an event handler for a given event, based upon that event's name.
@@ -150,22 +150,22 @@ function GameViewModel(urls) {
             return func(event);
         else
             return 0;
-    }
+    };
     self.eventHandlers["Comment"] = function(event) {
         var player = self.playerInSeat(event.data.seatNumber);
         if (!player.isCurrentPlayer())
             self.addComment(player, event.data.message);
 
         return 0;
-    }
+    };
     self.eventHandlers["Player Added"] = function(event) {
         self.addPlayer(new Player(event.data));
         return 0;
-    }
+    };
     self.eventHandlers["Invite Sent"] = function(event) {
         self.addInvite(new Invite(event.data));
         return 0;
-    }
+    };
     self.eventHandlers["Invite Accepted"] = function(event) {
         var invite = self.inviteFor(event.data.email);
         if (invite) {
@@ -174,7 +174,7 @@ function GameViewModel(urls) {
             self.addInvite(new Invite(event.data));
         }
         return 0;
-    }
+    };
     self.eventHandlers["Invite Declined"] = function(event) {
         var invite = self.inviteFor(event.data.email);
         if (invite) {
@@ -183,11 +183,11 @@ function GameViewModel(urls) {
             self.addInvite(new Invite(event.data));
         }
         return 0;
-    }
+    };
     self.eventHandlers["Invite Revoked"] = function(event) {
         self.removeInvite(event.data.email);
         return 0;
-    }
+    };
     self.eventHandlers["New Round"] = function(event) {
         if (self.waiting) {
             window.location.reload();
@@ -201,7 +201,7 @@ function GameViewModel(urls) {
             self.log().addRound();
         }
         return 0;
-    }
+    };
     self.eventHandlers["BS"] = function(event) {
         var total = 0;
         for (var i = 0; i < self.players().length; i++) {
@@ -219,31 +219,31 @@ function GameViewModel(urls) {
         self.diceTotal(new Bid(total, self.currentBid().faceValue));
 
         return 2000;
-    }
+    };
     self.eventHandlers["Bid"] = function(event) {
         var bid = new Bid(event.data.number, event.data.faceValue);
         self.currentBid(bid);
         self.log().addBid(self.playerInSeat(event.data.seat), bid);
         self.setBidder(self.nextBidder());
         return 1000;
-    }
+    };
     self.eventHandlers["Die Lost"] = function(event) {
         var player = self.playerInSeat(event.data.seat);
         player.loseDie();
         self.log().addDieLost(event.data.description, player.isCurrentPlayer());
 
         return 10000;
-    }
+    };
     self.eventHandlers["Dice Roll"] = function(event) {
         var player = self.playerInSeat(event.data.seatNumber);
         player.assignDice(event.data.dice);
         return 0;
-    }
+    };
 
     self.plusOne = function() {
         var bid = self.currentBid().plusOne();
         self.submitBid(bid);
-    }
+    };
     self.bid = function() {
         var number = parseInt($("#number").val());
         var faceValue = parseInt($("#face_value").val());
@@ -253,24 +253,24 @@ function GameViewModel(urls) {
             alert("Illegal bid.  Please try again.");
         else
             self.submitBid(bid);
-    }
+    };
     self.setBidMade = function() {
         clearInterval(self.toggleTurnNotificationTimer);
         self.resetTurnNotification();
         self.bidMade(true);
-    }
+    };
     self.submitBid = function(bid) {
         self.setBidMade();
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
             alert("successful bid.")
         });
-    }
+    };
     self.bs = function() {
         self.setBidMade();
         $.post(self.bsUrl, {}, function(data) {
             alert("successful bs.")
         });
-    }
+    };
 
     self.process = function() {
         self.processing = true;
@@ -289,7 +289,7 @@ function GameViewModel(urls) {
             self.process();
         else
             setTimeout(self.process, delay);
-    }
+    };
 
     self.loop = function() {
         if (self.processing || self.paused) {
@@ -304,23 +304,23 @@ function GameViewModel(urls) {
         jqxhr.always(function(){
             setTimeout(self.loop, 2000);
         });
-    }
+    };
 
-    self.pause = function() { self.paused = true; }
+    self.pause = function() { self.paused = true; };
 
     self.nextBidder = function() {
         var next = self.adjustSeat(self.bidder(), 1);
         while (self.playerInSeat(next).noDice())
             next = self.adjustSeat(next, 1);
         return next;
-    }
+    };
 
     self.adjustSeat = function(seat, adjust) {
         if (adjust < 0)
             // Convert a negative adjustment to the corresponding positive adjustment
             adjust = self.players().length + (adjust % self.players().length);
         return (seat + adjust) % self.players().length;
-    }
+    };
 
     self.setBidder = function(seatNumber) {
         self.bidder(seatNumber);
@@ -333,7 +333,7 @@ function GameViewModel(urls) {
         self.setBidder(startingSeat);
         self.currentBid(null);
         self.diceTotal(null);
-    }
+    };
 
     //Chat
     self.postComment = function() {

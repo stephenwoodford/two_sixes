@@ -11,18 +11,18 @@ Player = function (obj) {
 
     this.assignDice = function(diceArray) {
         this.diceArray(diceArray);
-    }
+    };
 
     this.reset = function(hasDice) {
         this.lostDie(false);
         this.hasDice(hasDice);
         this.diceTotal(-1);
         this.calledBS(false);
-    }
+    };
 
     this.diceIcons = ko.computed(function() {
         if (this.isCurrentPlayer()) {
-            return this.diceArray().map(function(elt) { return DICE_ICONS[elt] }).join(" ");
+            return this.diceArray().map(function(elt) { return DICE_ICONS[elt]; }).join(" ");
         } else {
             return "No dice";
         }
@@ -39,5 +39,5 @@ Player = function (obj) {
     this.loseDie = function() {
         this.lostDie(true);
         this.diceCount(this.diceCount() - 1);
-    }
-}
+    };
+};
