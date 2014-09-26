@@ -21,7 +21,11 @@ function GameViewModel(urls) {
     this.message = ko.observable("");
     this.initialTitle = document.title;
     this.toggleTurnNotificationTimer = null;
+    this.turnNotification = null;
     var chat_room = $('#chat ul');
+
+    if (notify.permissionLevel() == notify.PERMISSION_DEFAULT)
+        notify.requestPermission();
 
     self.players = ko.observableArray();
     self.addPlayer = function(player) {
@@ -262,13 +266,13 @@ function GameViewModel(urls) {
     self.submitBid = function(bid) {
         self.setBidMade();
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
-            alert("successful bid.")
+            alert("successful bid.");
         });
     };
     self.bs = function() {
         self.setBidMade();
         $.post(self.bsUrl, {}, function(data) {
-            alert("successful bs.")
+            alert("successful bs.");
         });
     };
 
@@ -325,7 +329,7 @@ function GameViewModel(urls) {
     self.setBidder = function(seatNumber) {
         self.bidder(seatNumber);
         if (self.playerInSeat(seatNumber).isCurrentPlayer())
-            self.toggleTurnNotificationTimer = setInterval(self.toggleTurnNotification, 600);
+            self.notifyBidder();
         self.bidMade(false);
     };
 
@@ -366,6 +370,15 @@ function GameViewModel(urls) {
         return;
     };
 
+    self.notifyBidder = function() {
+        self.toggleTurnNotificationTimer = setInterval(self.toggleTurnNotification, 600);
+
+        self.turnNotification = notify.createNotification(self.initialTitle, {
+            body : "Your Turn!",
+            icon : FAVICON_RED
+        });
+    };
+
     self.toggleTurnNotification = function() {
         self.toggleFavicon();
         if (self.faviconIsRed())
@@ -391,5 +404,7 @@ function GameViewModel(urls) {
     self.resetTurnNotification = function() {
         document.title = self.initialTitle;
         $("#favicon").attr("href", FAVICON_BLACK);
+        if (self.turnNotification)
+            self.turnNotification.close();
     };
 }

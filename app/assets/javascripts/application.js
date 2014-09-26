@@ -15,4 +15,5 @@
 //= require turbolinks
 //= require knockout
 //= require bootstrap-sprockets
+//= require desktop-notify-min
 //= require_tree .
