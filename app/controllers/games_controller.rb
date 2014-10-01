@@ -1,36 +1,10 @@
 class GamesController < ApplicationController
-  before_action :authenticate_user!, except: [:events, :show, :stats]
+  before_action :authenticate_user!, except: [:show, :stats]
 
   ##############################
   ##  Controller Methods      ##
   ##  (Sorted alphabetically) ##
   ##############################
-
-  def bid
-    game = current_user.games.find(params[:id])
-    number = params[:number]
-    face_value = params[:face_value]
-    errors = []
-    errors << "The bid must include a total number." unless number
-    errors << "The bid must include a valid total number." unless number =~ /\A\d+\z/
-    errors << "The bid must include a face value." unless face_value =~ /\A\d+\z/
-    errors << "The bid must include a valid face value." unless face_value =~ /\A\d+\z/
-
-    render status: 400, json: {errors: errors} and return if errors.any?
-
-    bid = Bid.new(number.to_i, face_value.to_i)
-    game.bid(current_user, bid)
-  end
-
-  def bs
-    game = current_user.games.find(params[:id])
-    game.bs(current_user)
-  end
-
-  def comments
-    game = current_user.games.find(params[:id])
-    game.add_comment(current_user, params[:message])
-  end
 
   def create
     @game = current_user.owned_games.create
@@ -39,20 +13,6 @@ class GamesController < ApplicationController
     @game.add_player(current_user, handle)
 
     redirect_to @game
-  end
-
-  def events
-    game = Game.find(params[:id])
-    player = game.player_for(current_user) if current_user
-
-    ret = game.events(params[:prev_event]).reject{|event| game.filter_event?(player, event) }.map do |event|
-      {
-        number: event.number,
-        event: event.name,
-        data: event.action.to_hash
-      }
-    end
-    render json: ret
   end
 
   def index
@@ -88,10 +48,10 @@ class GamesController < ApplicationController
     @can_revoke = @is_owner
     @can_invite = @is_owner
     @urls = {}
-    @urls[:bid] = bid_game_url(@game)
-    @urls[:bs] = bs_game_url(@game)
-    @urls[:events] = events_game_url(@game)
-    @urls[:comments] = comments_game_url(@game)
+    @urls[:bid] = bid_api_v1_game_url(@game)
+    @urls[:bs] = bs_api_v1_game_url(@game)
+    @urls[:events] = events_api_v1_game_url(@game)
+    @urls[:comments] = comments_api_v1_game_url(@game)
 
     if @game.finished?
       redirect_to stats_games_path(@game)

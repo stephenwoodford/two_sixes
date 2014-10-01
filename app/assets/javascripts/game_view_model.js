@@ -266,13 +266,13 @@ function GameViewModel(urls) {
     self.submitBid = function(bid) {
         self.setBidMade();
         $.post(self.bidUrl, { number: bid.number, face_value: bid.faceValue }, function(data) {
-            alert("successful bid.");
+
         });
     };
     self.bs = function() {
         self.setBidMade();
         $.post(self.bsUrl, {}, function(data) {
-            alert("successful bs.");
+
         });
     };
 
