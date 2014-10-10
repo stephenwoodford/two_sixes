@@ -109,7 +109,7 @@
   <script type="text/javascript">
     var game = new GameViewModel(<%= raw @urls.to_json %>);
     game.waiting = false;
-    game.bidder(<%= @game.bidder.seat %>);
+    game.setBidder(<%= @game.bidder.seat %>);
     game.highwaterMark = <%= @game.last_event.number %>;
     <% if @game.current_bid %>
       game.currentBid(new Bid(<%= @game.current_bid.number %>, <%= @game.current_bid.face_value %>));
