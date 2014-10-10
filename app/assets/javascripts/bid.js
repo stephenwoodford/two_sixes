@@ -24,4 +24,15 @@ Bid = function (number, faceValue) {
             return false;
         return this.faceValue <= bid.faceValue;
     };
+
+    this.isValid = function() {
+        if (this.number < 0)
+            // Must bid a postive number
+            return false;
+        if (this.faceValue < 1 || this.faceValue > 6)
+            // faceValue needs to be between 1 and 6
+            return false;
+
+        return true;
+    };
 };

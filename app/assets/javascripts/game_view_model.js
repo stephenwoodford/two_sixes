@@ -253,10 +253,30 @@ function GameViewModel(urls) {
         var faceValue = parseInt($("#face_value").val());
         var bid = new Bid(number, faceValue);
 
-        if (self.currentBid() && bid.lessThanOrEqual(self.currentBid()))
-            alert("Illegal bid.  Please try again.");
-        else
+        if (self.isLegalBid(bid))
             self.submitBid(bid);
+        else
+            alert("Illegal bid.  Please try again.");
+    };
+    self.numberOfDiceLeft = function() {
+        var ret = 0;
+        for (var i = 0; i < self.players().length; i++)
+            ret += self.players()[i].diceCount();
+
+        return ret;
+    };
+    self.isLegalBid = function(bid) {
+        if (!bid.isValid())
+            return false;
+
+        if (self.currentBid() && bid.lessThanOrEqual(self.currentBid()))
+            // Bids must always go up.
+            return false;
+        if (bid.number > self.numberOfDiceLeft())
+            // Cannot bid more than all dice left in play
+            return false;
+
+        return true;
     };
     self.setBidMade = function() {
         clearInterval(self.toggleTurnNotificationTimer);
