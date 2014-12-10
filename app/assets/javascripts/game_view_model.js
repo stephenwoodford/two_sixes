@@ -253,6 +253,9 @@ function GameViewModel(urls) {
         var faceValue = parseInt($("#face_value").val());
         var bid = new Bid(number, faceValue);
 
+        if (faceValue == 1 && !self.confirmOnes())
+            return;
+
         if (self.isLegalBid(bid))
             self.submitBid(bid);
         else
@@ -264,6 +267,12 @@ function GameViewModel(urls) {
             ret += self.players()[i].diceCount();
 
         return ret;
+    };
+    self.confirmOnes = function() {
+        // Only confirm w/ the player if there's already been a bid.
+        if (!self.currentBid())
+            return true;
+        return confirm("Are you sure you want to bid on 1s?");
     };
     self.isLegalBid = function(bid) {
         if (!bid.isValid())
