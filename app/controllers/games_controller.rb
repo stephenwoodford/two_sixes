@@ -28,7 +28,7 @@ class GamesController < ApplicationController
     invite = game.invites.create(user: user, email: email)
     if invite.valid?
       game.add_event(invite)
-      UserMailer.invite(invite).deliver
+      #UserMailer.invite(invite).deliver # TODO: Fix email on production
     else
       messages = invite.errors.messages
       if messages[:email] == ["is not an email"]
